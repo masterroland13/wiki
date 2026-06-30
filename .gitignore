@@ -1,0 +1,13 @@
+# 临时目录
+tmp/
+*.html
+
+# macOS
+.DS_Store
+
+# 本地工具缓存
+.firecrawl/
+
+# 环境变量与私密
+.env
+.env.*

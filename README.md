@@ -1,0 +1,28 @@
+# wiki — 个人复利知识库
+
+基于 [Karpathy LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) 思路的 **轻量实现**：`references/raw/` 收原件，`wiki/` 存结构化笔记，Agent 通过 `/wiki`、`/review`、`/lint` 维护。
+
+- **远程**：https://github.com/masterroland13/wiki
+- **入口**：[`wiki/index.md`](wiki/index.md)
+- **规则**：[`wiki/WIKI_SCHEMA.md`](wiki/WIKI_SCHEMA.md)
+- **维护说明**：[`AGENTS.md`](AGENTS.md)
+
+## 快速开始
+
+1. 新材料 → 对话中说「投喂 wiki」或 `/wiki`
+2. 待整理 → 先记 [`wiki/inbox.md`](wiki/inbox.md)，每周 `/review`
+3. 体检 → 「lint 一下 wiki」
+
+## 目录概览
+
+```
+wiki/
+├── index.md          # 总导航
+├── inbox.md          # 待归档
+├── changelog.md
+├── maps/ topics/ entities/ projects/ papers/ templates/
+references/
+├── raw/              # 原件收件箱
+└── papers/           # PDF（可选）
+.agents/skills/       # wiki · lint · review
+```
