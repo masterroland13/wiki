@@ -22,6 +22,7 @@ review_after: 2026-07-15
 
 | 页面 | 用途 |
 |------|------|
+| [**使用手册**](./maps/wiki-user-guide.md) | 完整上手说明：工作流、技能、模板、归档 |
 | [Schema](./WIKI_SCHEMA.md) | 目录布局、前缀、维护习惯 |
 | [Changelog](./changelog.md) | 结构性变更记录 |
 | [Inbox](./inbox.md) | 待归档队列 |
@@ -40,7 +41,12 @@ review_after: 2026-07-15
 
 | 笔记 | 说明 |
 |------|------|
-| *（待 ingest）* | 哲学：`phil-` → `topics/`、`entities/` |
+| [《妥协社会》· 纯划线 37 条](./topics/phil-han-palliative-society-highlights.md) | 原文 + 上下文 / 解读 |
+| [《妥协社会》· 阅读笔记索引](./maps/phil-han-palliative-society-reading-index.md) | 27 条想法 + Agent 点评（全书） |
+| [《妥协社会》· 笔记 11–27](./topics/phil-han-palliative-society-notes-11-27.md) | 无意义 → 伦理学 |
+| [《妥协社会》· 笔记 5–10](./topics/phil-han-palliative-society-notes-05-10.md) | 幸福强制 / 生存 |
+| [《妥协社会》· 笔记 1–4](./topics/phil-han-palliative-society-ch01-algophobia-notes.md) | 痛苦恐惧症 |
+| [《妥协社会》实体](./entities/entity-book-palliative-society.md) | 书目 hub |
 
 ## 理工
 

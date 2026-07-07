@@ -1,0 +1,557 @@
+---
+type: map
+status: growing
+created: 2026-06-30
+updated: 2026-06-30
+tags:
+  - wiki
+  - guide
+  - onboarding
+sources:
+  - ../WIKI_SCHEMA.md
+  - ../../AGENTS.md
+confidence: 0.85
+review_after: 2026-08-01
+---
+
+# Wiki 使用手册
+
+本页是 **个人复利知识库** 的完整使用说明：面向人类读者，也供 Agent 在维护任务前快速对齐约定。
+
+> **TL;DR**：新材料先低摩擦 Capture → 每周 `/review` 整理 → 值得反复查找的页从 `index.md` 链入；投喂 URL/截图时说「归档进 wiki」或 `/wiki`。
+
+## 目录
+
+1. [这是什么](#这是什么)
+2. [仓库分层](#仓库分层)
+3. [目录结构](#目录结构)
+4. [快速上手](#快速上手)
+5. [三段式工作流](#三段式工作流)
+6. [Agent 技能](#agent-技能)
+7. [写一页 Wiki](#写一页-wiki)
+8. [命名与分类](#命名与分类)
+9. [Raw 与 URL 归档](#raw-与-url-归档)
+10. [图片处理](#图片处理)
+11. [归档深度 L0 / L1 / L2](#归档深度-l0--l1--l2)
+12. [导航与互链](#导航与互链)
+13. [Topic 与 Entity 怎么选](#topic-与-entity-怎么选)
+14. [模板选择](#模板选择)
+15. [脚本与验收](#脚本与验收)
+16. [Git 与多宿主协作](#git-与多宿主协作)
+17. [常见场景速查](#常见场景速查)
+18. [延伸阅读](#延伸阅读)
+
+---
+
+## 这是什么
+
+本仓库是一个 **Git + Markdown + Agent** 维护的个人知识库：
+
+- **Wiki**（`wiki/`）：经过提炼、可复用的结论与导航
+- **Raw**（`references/raw/`）：原始剪藏、长文备份、截图转写——默认不改写正文
+- **Schema**（`AGENTS.md` + `wiki/WIKI_SCHEMA.md`）：约定与维护规则
+
+设计目标：
+
+- 不依赖 Obsidian 也能长期维护（Obsidian 仅作可选浏览器）
+- 人类与 Agent 共用同一套目录与 frontmatter
+- 结构通过 **链接 + 索引** 涌现，而非事先建满文件夹
+
+**单一真相源**：检索与维护时，以 `wiki/` + `references/raw/` 为准，不在聊天记录里找结论。
+
+---
+
+## 仓库分层
+
+| 层 | 路径 | 用途 | 谁写 |
+|----|------|------|------|
+| **Raw** | `references/raw/` | 剪藏、备份、长文、草稿、截图 assets | Agent 抓取或人类粘贴；Agent 默认只读 |
+| **Papers** | `references/papers/` | PDF 与论文原件（可选） | 人类 |
+| **Wiki** | `wiki/` | 长期笔记、导航、项目知识 | 人类 + Agent |
+| **Schema** | `AGENTS.md`、`wiki/WIKI_SCHEMA.md` | 项目说明与目录约定 | 人类（改约定时同步 changelog） |
+
+**阅读优先级**（Agent 与人类相同）：
+
+1. `AGENTS.md`
+2. `wiki/WIKI_SCHEMA.md`
+3. `wiki/index.md`
+4. 相关 map / project / topic
+
+---
+
+## 目录结构
+
+### `wiki/` 子目录
+
+| 路径 | 作用 |
+|------|------|
+| `wiki/index.md` | **总入口**：主题索引表 |
+| `wiki/changelog.md` | 结构性变更记录（非每笔必写） |
+| `wiki/inbox.md` | 可选：尚未归档的待办清单 |
+| `wiki/maps/` | 主题地图、学习路线、工作流说明（**本手册在此**） |
+| `wiki/roadmaps/` | 细分路线（如某学科子路线） |
+| `wiki/topics/` | 主题笔记：概念、方法、读书记录 |
+| `wiki/entities/` | 术语 / 作品 / 人物等短定义页 |
+| `wiki/papers/` | 单篇论文阅读笔记 |
+| `wiki/projects/` | 按项目归档的知识 hub |
+| `wiki/templates/` | 新页骨架 |
+| `wiki/references/` | Wiki 侧参考（如图片处理指南） |
+
+### 默认导航协议
+
+```
+wiki/index.md
+    ↓
+wiki/maps/ 或 wiki/projects/
+    ↓
+wiki/topics/、wiki/entities/、wiki/papers/
+```
+
+不要跳过 index 直接乱建叶子页——否则容易变成「孤岛页」。
+
+---
+
+## 快速上手
+
+### 第一次使用
+
+1. 打开 [`wiki/index.md`](../index.md) 熟悉分区（文艺 / 人文 / 理工 / 跨学科 / 实体 / 项目）
+2. 读 [`Capture → Review → Archive`](./capture-review-archival-workflow.md) 了解日常节奏
+3. 有材料要归档时，对 Agent 说：**「投喂 wiki」** 或 **`/wiki`**，附上 URL / 截图 / 聊天摘要
+
+### 30 秒录入一条想法
+
+打开 [`wiki/inbox.md`](../inbox.md)，在合适分区追加一行：
+
+```markdown
+- [ ] 某文章 URL — 想提炼「XXX 结论」
+```
+
+不必立刻分类；每周 `/review` 时再 promote 到 `topics/`。
+
+### 第一次写正式 topic
+
+1. 复制 [`wiki/templates/topic-template.md`](../templates/topic-template.md) 或 [`topic-ingest-template.md`](../templates/topic-ingest-template.md)
+2. 保存到 `wiki/topics/<prefix>-<slug>.md`（见 [命名与分类](#命名与分类)）
+3. 填 frontmatter + 一句 TL;DR + 来源 + ≥2 个 Related
+4. 在 [`wiki/index.md`](../index.md) 对应分区加一行链接
+
+---
+
+## 三段式工作流
+
+核心流程：**Capture → Review → Archive**。详见 [`capture-review-archival-workflow.md`](./capture-review-archival-workflow.md)。
+
+| 阶段 | 目标 | 默认位置 | 时间预算 |
+|------|------|----------|----------|
+| **Capture** | 先把想法落地，降低分类决策 | `wiki/inbox.md` 或临时页 | 10–60 秒 |
+| **Review** | 补属性、互链、判断价值 | inbox + 目标页草稿 | 15–30 分钟 / 周 |
+| **Archive** | 沉淀为长期资产 | `topics/`、`maps/`、`entities/` | 按需 |
+
+### Capture 规则
+
+1. **先写下来**，不要先纠结放哪个文件夹
+2. 至少补一个 **来源**（`sources` 或 Raw 路径）或上下文线索
+3. 能想到关联对象，立刻加一个内部链接
+
+### Review 每周清单
+
+- [ ] 把高价值 inbox 项 promote 到对应目录
+- [ ] 检查 frontmatter 是否完整（尤其 `growing`/`stale` 的 `confidence`、`review_after`）
+- [ ] 每页是否写清 **主张 → 证据 → 边界**（避免只做摘抄）
+- [ ] 修复断链，补 topic ↔ map ↔ entity 互链
+- [ ] 结构性变更写入 [`wiki/changelog.md`](../changelog.md)
+
+### Archive 启发式
+
+| 内容类型 | 去向 |
+|----------|------|
+| 可复用知识、方法、机制 | `wiki/topics/` |
+| 导航、学习路径、知识编排 | `wiki/maps/` |
+| 稳定术语 / 人物 / 作品定义 | `wiki/entities/` |
+| 单篇论文笔记 | `wiki/papers/` |
+| 某项目专属决策与经验 | `wiki/projects/<project>/` |
+
+---
+
+## Agent 技能
+
+本仓库有三个定制技能，Canonical 定义在 `.agents/skills/`（Cursor / Claude / Codex 各有副本）。
+
+### 技能对照表
+
+| 技能 | 用途 | Cursor 怎么说 | Claude Code | Codex |
+|------|------|---------------|-------------|-------|
+| **/wiki** | 新 URL、截图、聊天 → Raw + topic + 导航 | 「投喂 wiki」「归档进 wiki」 | `/wiki` | `$wiki` |
+| **/review** | inbox 分拣、到期页复盘、灵感连接 | 「/review」「复盘 inbox」 | `/review` | `$review` |
+| **/lint** | 坏链、孤岛页、frontmatter 机械体检 | 「lint 一下」「整理 wiki」 | `/lint` | `$lint` |
+
+### 分工原则
+
+```
+新输入 ──→ /wiki（归档）
+已有笔记 ──→ /review（语义整理、互链、灵感）
+机械问题 ──→ /lint（链接、导航、格式）
+```
+
+- **review 做判断**；**lint 做体检**。review 时可顺手修明显坏链，但大量格式问题应单独 `/lint`。
+- 三个技能 **不是** 重型 compile loop：优先小步归档、必要导航、可追溯来源。
+
+### `/wiki` 典型输入
+
+| 输入 | Agent 行为 |
+|------|------------|
+| 文章 URL | 评估 L0/L1/L2 → 必要时 Raw → topic → index/map |
+| 截图 / 幻灯片（无 URL） | 几乎总是 Raw + 结构化转写 |
+| 聊天摘要 / JD / 论文摘要 | 按 archive-depth 定档 |
+| TrendRadar 摘要 | 走专用路由，不随意开 deep-dive topic |
+
+### `/review` 典型模式
+
+| 你说 | Agent 做什么 |
+|------|--------------|
+| 「复盘 inbox」 | 逐项 promote / merge / link / defer / drop |
+| 「到期页 / stale / growing」 | 扫 `review_after` ≤ 今天 |
+| 「复习 / 考我」 | Recall 模式 |
+| 「还能写什么」 | Inspiration pass：矛盾、空白、跨 topic 桥梁 |
+| 未指定 | 默认 Weekly（15–30 分钟） |
+
+### `/lint` 检查项
+
+1. `wiki/index.md` 和相关 map 能否找到新内容
+2. 页面是否落在合适目录
+3. 相对链接、图片路径、frontmatter 是否明显有错
+4. 是否满足模板 MVP：结论 + 来源 + Related
+5. 必要时补 `wiki/changelog.md`
+
+---
+
+## 写一页 Wiki
+
+### Frontmatter 必填
+
+```yaml
+---
+type: topic          # topic | map | paper | entity | project-note
+status: seed         # seed | growing | stable | stale
+created: 2026-06-30
+updated: 2026-06-30
+tags:
+  - cs
+sources:
+  - https://example.com/article
+  - ../../references/raw/example-clip.md
+---
+```
+
+### 按 status 补充
+
+| status | 建议 |
+|--------|------|
+| `seed` | 初稿，可省略 confidence |
+| `growing` | 补 `confidence`（0.0–1.0）和 `review_after` |
+| `stable` | 结论已收敛 |
+| `stale` | 可能过时，必须设 `review_after` 以便复盘 |
+
+### 页面 MVP（首轮完成标准）
+
+1. **一句可复用结论**（30 秒内读懂）
+2. **至少一条可信来源**（`sources` 或 Raw 链）
+3. **至少两条 Related 链接**
+4. **至少一个不确定性 / 待验证点**（Open Questions 或 Boundaries）
+
+### 高价值 ingest 页额外要求
+
+使用 [`topic-ingest-template.md`](../templates/topic-ingest-template.md) 时，补全：
+
+- **Claims from Source** — 原文主张
+- **My Assessment** — 你的判断（不照抄）
+- **Boundaries / Failure Cases** — 何时不成立
+- **Actionable Moves** — 可执行下一步
+
+Review 时对每页过三问：
+
+1. **主张是什么？** — 说不清 → 降级为 seed 或退回 inbox
+2. **证据在哪？** — sources / Raw / 可复现链接
+3. **边界在哪？** — 与哪条旧结论冲突
+
+---
+
+## 命名与分类
+
+### 学科 slug 前缀
+
+| 域 | 前缀 | 示例文件名 |
+|----|------|------------|
+| 文学 | `lit-` | `lit-magical-realism.md` |
+| 电影/影像 | `film-` | `film-editing-rhythm.md` |
+| 音乐 | `music-` | `music-modal-jazz.md` |
+| 计算机 | `cs-` | `cs-dp-intro.md` |
+| 哲学 | `phil-` | `phil-stoicism.md` |
+| 物理 | `phys-` | `phys-entropy-intuition.md` |
+| 天文 | `astro-` | `astro-exoplanets.md` |
+| 跨学科 | `x-` | `x-info-theory-physics.md` |
+| 实体 | `entity-` | `entity-author-orwell.md` |
+
+### 文件路径约定
+
+```
+wiki/topics/<slug>.md
+wiki/maps/<slug>.md
+wiki/entities/entity-<slug>.md
+wiki/papers/<slug>.md
+wiki/projects/<project>/<slug>.md
+```
+
+**导航靠 `index.md` 分区**，不靠再建一层学科文件夹。静态资源统一放各目录下的 `assets/`。
+
+---
+
+## Raw 与 URL 归档
+
+### 何时需要 Raw
+
+| 情况 | 是否 Raw |
+|------|----------|
+| 长、杂、来源重要、含图、以后可能回看 | **是** → `references/raw/` |
+| 已足够干净的小结论 | 可直接写 `wiki/`，`sources` 挂 URL |
+| 仅截图 / 幻灯片 | **几乎总是** Raw |
+
+Raw 约定：Agent **默认只读**原文；结构化结论写在 `wiki/` 并链回 Raw。
+
+### 只有 URL 时
+
+**方式一（推荐）**：对 Agent 说「投喂 wiki」+ URL，由 Agent 抓取并归档。
+
+**方式二（终端）**：
+
+```bash
+python3 scripts/ingest_url_to_raw.py 'https://example.com/article'
+# 需要正文配图时：
+python3 scripts/ingest_url_to_raw.py 'https://…' --fetch-images
+```
+
+> 注：`ingest_url_to_raw.py` 为文档约定脚本；若本地尚未提供，由 Agent 用 Firecrawl / curl 等方式 fallback。
+
+### 合并 vs 新建 topic
+
+归档前先查是否已有同主题页：
+
+1. 读 `wiki/index.md` 或 `grep` 相关关键词
+2. **extend** 已有 topic：新段落 + 更新 `updated` + 补 `sources`
+3. **新建** topic：主题独立、会反复检索、或 L2 深读
+
+---
+
+## 图片处理
+
+### 存放位置
+
+| 归属 | 路径 |
+|------|------|
+| Raw 配图 | `references/raw/assets/<stem>/` |
+| Wiki 独有图 | `wiki/<dir>/assets/<stem>/` |
+| **默认策略** | Wiki **引用** Raw assets，避免重复存图 |
+
+### 嵌入语法
+
+```markdown
+# Raw 文件内
+![描述](./assets/<stem>/file.png)
+*图：…*
+
+# Wiki 引用 Raw
+![描述](../../references/raw/assets/<stem>/file.png)
+```
+
+### 获取优先级
+
+1. 用户 attach → 复制到 Raw assets
+2. Firecrawl MCP（网页正文与图片）
+3. `scripts/ingest_url_to_raw.py --fetch-images`（若可用）
+4. curl（fallback）
+
+信息图 / 清单图：**Raw 内表格或列表转写** + 保留原图。
+
+完整说明：[`wiki/references/image-handling-guide.md`](../references/image-handling-guide.md)
+
+---
+
+## 归档深度 L0 / L1 / L2
+
+Agent 默认 **L1 标准**；你可口头覆盖：
+
+| 你说 | 档位 |
+|------|------|
+| 「只要 Raw」 | L0 |
+| 「标准 wiki」 / 默认 | L1 |
+| 「深挖」 | L2 |
+
+| 档位 | 典型输入 | Raw | Wiki | 导航 |
+|------|----------|-----|------|------|
+| **L0 片段** | 单图/单段、无 URL | 必做 | 短段并入已有 topic 或 seed | 仅当新主题 |
+| **L1 标准** | URL、文章摘要 | 长/杂/重要时必做 | topic-ingest 模板 | index 或 map |
+| **L2 深读** | 高价值技术文、明确要求深挖 | 全文或精读摘录 | 完整 Assessment + Boundary + Actionable | index + map + changelog |
+
+### confidence 粗算（growing / stale 页）
+
+| 来源组合 | 建议 confidence |
+|----------|-----------------|
+| 仅截图/聊天、无一手 URL | ≤ 0.70 |
+| 截图 + ≥2 独立二次文献一致 | 0.65–0.75 |
+| 一手 URL / 官方文档 + Raw | ≥ 0.80 |
+| 二手解读、无源码核对 | 0.55–0.65 |
+
+详见 [`references/archive-depth.md`](../../references/archive-depth.md)。
+
+---
+
+## 导航与互链
+
+### 入口层级
+
+1. **全局**：[`wiki/index.md`](../index.md)
+2. **域 / 主题**：[`wiki/maps/learning-spine.md`](./learning-spine.md) 等 map
+3. **项目**：`wiki/projects/<name>/index.md`
+4. **叶子**：topic / entity / paper
+
+### 何时更新 index / changelog
+
+| 变更 | index | changelog |
+|------|-------|-----------|
+| 新 topic，值得反复找到 | ✅ | 可选 |
+| 新 map / 大结构调整 | ✅ | ✅ |
+| 仅给已有 topic 补一段 | 可选 | 通常不需要 |
+| 合并 / 删除页 | ✅ | ✅ |
+
+### Related 链接
+
+每页至少 **2 个 Related**，类型尽量多样（map + entity + topic），让结构从链接中涌现。
+
+---
+
+## Topic 与 Entity 怎么选
+
+| 问题 | 建什么 |
+|------|--------|
+| 「这是谁 / 哪部 / 哪个概念？」 | `wiki/entities/entity-*.md` |
+| 「我怎么理解 / 比较 / 应用？」 | `wiki/topics/<prefix>-*.md` |
+| 单次读/观/听记录 | 写在 **entity 页** 的「个人笔记」小节 |
+
+**避免重复 hub**：一个概念只建一篇 entity，多学科 topic 链向同一 entity。
+
+详见 [`wiki/entities/README.md`](../entities/README.md)。
+
+---
+
+## 模板选择
+
+| 模板 | 适用 |
+|------|------|
+| `topic-template.md` | 通用主题（概念、方法、机制） |
+| `topic-ingest-template.md` | 从 URL / Raw / 文章提炼 |
+| `topic-faq-template.md` | 面试问答、排障 FAQ |
+| `map-template.md` | 导航、学习路径 |
+| `entity-template.md` | 术语 / 人物 / 作品定义 |
+| `paper-template.md` | 论文阅读笔记 |
+| `project-note-template.md` | 项目决策、风险、指标 |
+
+设计原则与 MVP 标准：[`wiki/templates/README.md`](../templates/README.md)
+
+---
+
+## 脚本与验收
+
+### 图片路径验收
+
+```bash
+scripts/wiki_verify_images.sh wiki/topics/cs-example.md
+# 或批量
+scripts/wiki_verify_images.sh wiki/topics/*.md
+```
+
+退出码 0 = 全部 OK；1 = 存在断链。
+
+### `/wiki` 轻量验收清单
+
+- [ ] 新页目录正确；`sources` 可追溯
+- [ ] 至少一个入口（index / map / project）可到达
+- [ ] 图片文件存在、相对路径正确、有 alt
+- [ ] 可选：跑 `wiki_verify_images.sh` 或 `/lint`
+
+---
+
+## Git 与多宿主协作
+
+- **默认分支**：`master`
+- **远程**：`https://github.com/masterroland13/wiki`
+- **多 Agent / 多宿主**：同一远程可能有多处提交 → **先 `git pull` 再大改**；冲突以合并结果为准
+- Wiki 的单一真相在 **仓库**，不在某次聊天里
+
+Obsidian 可选：直接打开 `wiki/` 文件夹浏览；维护约定仍以 Schema 为准。
+
+---
+
+## 常见场景速查
+
+### 我读了一篇文章，想记下来
+
+```
+对 Agent：归档进 wiki
+附件/粘贴：https://…
+补充：我关心的是 XXX 结论
+```
+
+Agent 会：定 L1 → 必要时 Raw → `wiki/topics/` → 更新 index。
+
+### 我有一张截图，没有链接
+
+```
+对 Agent：投喂 wiki，这是某分享会的截图
+附件：screenshot.png
+```
+
+Agent 会：Raw + 结构化转写 → 短 topic 或并入已有页。
+
+### 我只有一个想法，还没想清楚
+
+手动写入 [`wiki/inbox.md`](../inbox.md)，周末说「`/review` 复盘 inbox」。
+
+### 某页写了很久，不确定是否过时
+
+把 frontmatter 改为 `status: stale`，设 `review_after`，然后 `/review`。
+
+### 链接红了 / 找不到新写的页
+
+说「**lint 一下**」或「**整理 wiki**」。
+
+### 我想规划跨学科学习
+
+打开 [`learning-spine.md`](./learning-spine.md)，按阶段补 seed topic，再在 index 链入。
+
+### 某项目知识不想和通用 topic 混在一起
+
+建 `wiki/projects/<name>/index.md` 作为 hub，项目笔记用 `project-note-template.md`。
+
+---
+
+## 延伸阅读
+
+| 文档 | 内容 |
+|------|------|
+| [`AGENTS.md`](../../AGENTS.md) | 项目正文、技能路径、文档索引 |
+| [`wiki/WIKI_SCHEMA.md`](../WIKI_SCHEMA.md) | 目录分工、维护习惯（Schema 权威） |
+| [`wiki/index.md`](../index.md) | 主题导航入口 |
+| [`capture-review-archival-workflow.md`](./capture-review-archival-workflow.md) | Capture → Review → Archive |
+| [`learning-spine.md`](./learning-spine.md) | 跨学科学习主轴 |
+| [`references/archive-depth.md`](../../references/archive-depth.md) | L0/L1/L2 与 confidence |
+| [`references/raw/README.md`](../../references/raw/README.md) | Raw 收件箱说明 |
+
+---
+
+## Related
+
+- [Wiki 索引](../index.md)
+- [Capture → Review → Archive](./capture-review-archival-workflow.md)
+- [Learning Spine](./learning-spine.md)
+- [WIKI_SCHEMA](../WIKI_SCHEMA.md)
