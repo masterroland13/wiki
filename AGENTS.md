@@ -1,4 +1,4 @@
-# wiki — 个人知识库维护说明（单一事实来源）
+﻿# wiki — 个人知识库维护说明（单一事实来源）
 
 **Claude Code** 通过根目录 `CLAUDE.md` 的 `@AGENTS.md` 导入本文件。**Cursor** 直接读本文件与 `wiki/WIKI_SCHEMA.md`；技能在 `.cursor/skills/`。**Codex** 以本文件为项目正文（技能在 `.codex/skills/`）。
 
@@ -54,11 +54,13 @@
 | **/wiki** | 投喂 URL、截图、聊天 → Raw + Wiki | `.agents/skills/wiki/SKILL.md` |
 | **/lint** | 坏链、导航、frontmatter 机械体检 | `.agents/skills/lint/SKILL.md` |
 | **/review** | inbox 分拣、到期页复盘、灵感连接 | `.agents/skills/review/SKILL.md` |
+| **/teacher** | 教练式学习：推导、复习、系统掌握（通用 + CS） | `.agents/skills/teacher/SKILL.md` |
+| **/teacher-cs** | CS 别名：算法、LeetCode、面试（必读 domain-cs.md） | `.agents/skills/teacher-cs/SKILL.md` |
 
-| 环境 | wiki | lint | review |
-|------|------|------|--------|
-| **Cursor** | 说「投喂 wiki / /wiki / 归档进 wiki」 | 说「整理 wiki / lint 一下」 | 说「/review / 复盘 inbox」 |
-| **Claude Code** | `/wiki` | `/lint` | `/review` |
-| **Codex** | `$wiki` | `$lint` | `$review` |
+| 环境 | wiki | lint | review | teacher | teacher-cs |
+|------|------|------|--------|---------|------------|
+| **Cursor** | 说「投喂 wiki / /wiki / 归档进 wiki」 | 说「整理 wiki / lint 一下」 | 说「/review / 复盘 inbox」 | `/teacher` / 教练式学习 | `/teacher-cs` / 教我做题 / 算法教练 |
+| **Claude Code** | `/wiki` | `/lint` | `/review` | `/teacher` | `/teacher-cs` |
+| **Codex** | `$wiki` | `$lint` | `$review` | `$teacher` | `$teacher-cs` |
 
 宿主副本：`.cursor/skills/`、`.claude/skills/`、`.codex/skills/` 与 `.agents/skills/` 保持同步。

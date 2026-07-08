@@ -65,13 +65,15 @@
 3. 大改动：在 `changelog.md` 顶部记一条
 4. 体检：按需 `/lint`；语义整理用 `/review`
 
-## 与 `/wiki` · `/lint` · `/review` 的配合
+## 与 `/wiki` · `/lint` · `/review` · `/teacher` 的配合
 
 | 技能 | 何时 |
 |------|------|
 | **/wiki** | 新 URL、截图、聊天、JD → Raw + topic + 导航 |
 | **/review** | inbox、到期页、`growing`/`stale` → 提炼、互链 |
 | **/lint** | 坏链、孤岛页、frontmatter、图片路径 |
+| **/teacher** | 还不会、要推导、系统学习（通用 + CS，见 `domain-cs.md`） |
+| **/teacher-cs** | 同上，CS 触发别名（算法、LeetCode、面试） |
 
 ## YAML frontmatter（按需）
 

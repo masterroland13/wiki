@@ -1,6 +1,12 @@
-# Wiki Changelog
+﻿# Wiki Changelog
 
 Newest entries at the top.
+
+## 2026-07-08
+
+- 从 [caapapx/teacher](https://github.com/caapapx/teacher) 安装 **`/teacher`** skill（含 `references/`、`evals/`）；`letsgo` 语境改为 **wiki 仓库**。
+- 新增 **`/teacher-cs`** 兼容别名（路由至 `teacher` + `domain-cs.md`）；同步 `.cursor/`、`.claude/`、`.codex/` 副本。
+- 新增 `wiki/projects/learning-progress/` 骨架；更新 `AGENTS.md`、`review` skill 分工表。
 
 ## 2026-07-07
 

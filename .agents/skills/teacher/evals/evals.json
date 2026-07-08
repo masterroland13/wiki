@@ -1,0 +1,126 @@
+{
+  "skill_name": "teacher",
+  "description": "Universal learning coach eval baseline — validates teaching quality across domains, CS topics, and teaching modes",
+  "evals": [
+    {
+      "id": 1,
+      "name": "math-quadratic-equation",
+      "prompt": "I want to learn the quadratic formula, middle school math level, give me a 15-minute guided walkthrough.",
+      "expected_output": "Should route to Mode A (Guided Decomposition), including: initial intuition, concrete hand-trace, key element checklist, reasoning chain, self-check list. Should NOT directly provide the formula for memorization.",
+      "assertions": [
+        "routes to guided decomposition mode",
+        "includes a concrete hand-trace with specific numbers",
+        "includes key element checklist in table format",
+        "includes self-check list",
+        "does not directly give the formula for rote memorization"
+      ],
+      "domain": "mathematics",
+      "tests_mode": "A"
+    },
+    {
+      "id": 2,
+      "name": "socratic-economics-exam",
+      "prompt": "Help me prepare for my macroeconomics final exam. I know there are fiscal policy and monetary policy, but I'm fuzzy on the details.",
+      "expected_output": "Should route to Mode B (Socratic + Advanced Recall), first probe what the user already knows, then guide the user to recall and derive through a question chain — not explain directly.",
+      "assertions": [
+        "routes to socratic mode",
+        "asks about the user's existing knowledge before explaining",
+        "designs a progressive question chain",
+        "includes hints about exam follow-up depth",
+        "ends with a list of weak spots"
+      ],
+      "domain": "economics",
+      "tests_mode": "B"
+    },
+    {
+      "id": 3,
+      "name": "mental-model-cell-division",
+      "prompt": "I want to understand the process of mitosis. It feels very abstract — can you draw a diagram to help me understand?",
+      "expected_output": "Should route to Mode C (Mental Model + Dual Coding), including ASCII diagrams or structured visual representation alongside text explanation.",
+      "assertions": [
+        "routes to mental model + dual coding mode",
+        "includes visual representation (ASCII diagram / table / flowchart)",
+        "dual explanation: text and visual",
+        "includes connection test questions",
+        "first asks about the user's existing understanding"
+      ],
+      "domain": "biology",
+      "tests_mode": "C"
+    },
+    {
+      "id": 4,
+      "name": "knowledge-source-with-doc",
+      "prompt": "I've uploaded a set of contract law study notes (assume provided). Help me review the difference between offer and acceptance based on these notes.",
+      "expected_output": "Should prioritize teaching from the user-provided notes, citing specific content from the notes — not substituting with the model's own knowledge.",
+      "assertions": [
+        "explicitly references the user-provided materials",
+        "teaching content based on user materials, not model knowledge",
+        "cites knowledge source",
+        "mentions will supplement with search if materials are insufficient"
+      ],
+      "domain": "law",
+      "tests_mode": "mixed"
+    },
+    {
+      "id": 5,
+      "name": "systematic-learning-french",
+      "prompt": "I want to systematically study the French past tense system. I have an A2 foundation. Give me a 30-minute study plan.",
+      "expected_output": "Should route to Mode F (Interleaved Practice + Generative Learning), design a mixed study plan with interleaved practice across different past tenses.",
+      "assertions": [
+        "routes to interleaved practice + generative learning mode",
+        "designs a 30-minute study plan",
+        "includes mixed practice problems (interleaved across different tenses)",
+        "includes generative tasks (sentence construction, comparison, etc.)",
+        "adapts difficulty to the user's A2 level"
+      ],
+      "domain": "language",
+      "tests_mode": "F"
+    },
+    {
+      "id": 6,
+      "name": "algorithm-two-sum",
+      "prompt": "我想学习两数之和这道算法题，LeetCode 第 1 题。我有 15 分钟，希望引导式讲解。",
+      "expected_output": "Should route to Mode A (algorithm concretization), read domain-cs context, include intuition, hand-trace, variable table, code mapping, self-check. Should NOT give complete solution code upfront.",
+      "assertions": [
+        "routes to guided decomposition / algorithm concretization mode",
+        "includes hand-trace with a small concrete example",
+        "includes variable or key element checklist in table format",
+        "includes self-check list",
+        "does not give complete solution code upfront",
+        "applies CS teaching patterns consistent with domain-cs"
+      ],
+      "domain": "algorithm",
+      "tests_mode": "A"
+    },
+    {
+      "id": 7,
+      "name": "socratic-redis-interview",
+      "prompt": "帮我准备 Redis 持久化的面试，我知道有 RDB 和 AOF 两种，但细节记不清了。",
+      "expected_output": "Should route to Mode B, probe existing knowledge first, use question chain, include interviewer follow-up depth, end with weak spots — not lecture directly.",
+      "assertions": [
+        "routes to socratic mode",
+        "asks about existing knowledge before explaining",
+        "designs progressive question chain",
+        "includes interviewer follow-up depth hints",
+        "ends with weak spot summary"
+      ],
+      "domain": "interview",
+      "tests_mode": "B"
+    },
+    {
+      "id": 8,
+      "name": "mental-model-transformer",
+      "prompt": "我想理解 Transformer 的自注意力机制，感觉很抽象，能画个图帮我理解吗？",
+      "expected_output": "Should route to Mode C with ASCII or structured visual plus text; ask about prior understanding first.",
+      "assertions": [
+        "routes to mental model + dual coding mode",
+        "includes visual representation (ASCII diagram / table / flowchart)",
+        "dual text and visual explanation",
+        "includes connection test questions",
+        "asks about user's existing understanding first"
+      ],
+      "domain": "ai",
+      "tests_mode": "C"
+    }
+  ]
+}

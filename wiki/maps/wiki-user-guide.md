@@ -176,7 +176,7 @@ wiki/topics/、wiki/entities/、wiki/papers/
 
 ## Agent 技能
 
-本仓库有三个定制技能，Canonical 定义在 `.agents/skills/`（Cursor / Claude / Codex 各有副本）。
+本仓库有五个定制技能，Canonical 定义在 `.agents/skills/`（Cursor / Claude / Codex 各有副本）。
 
 ### 技能对照表
 
@@ -185,17 +185,20 @@ wiki/topics/、wiki/entities/、wiki/papers/
 | **/wiki** | 新 URL、截图、聊天 → Raw + topic + 导航 | 「投喂 wiki」「归档进 wiki」 | `/wiki` | `$wiki` |
 | **/review** | inbox 分拣、到期页复盘、灵感连接 | 「/review」「复盘 inbox」 | `/review` | `$review` |
 | **/lint** | 坏链、孤岛页、frontmatter 机械体检 | 「lint 一下」「整理 wiki」 | `/lint` | `$lint` |
+| **/teacher** | 教练式学习：推导、复习、系统掌握 | `/teacher` / 教练式学习 | `/teacher` | `$teacher` |
+| **/teacher-cs** | CS 别名：算法、LeetCode、面试 | `/teacher-cs` / 教我做题 | `/teacher-cs` | `$teacher-cs` |
 
 ### 分工原则
 
 ```
 新输入 ──→ /wiki（归档）
+还不会/要推导 ──→ /teacher 或 /teacher-cs（CS）
 已有笔记 ──→ /review（语义整理、互链、灵感）
 机械问题 ──→ /lint（链接、导航、格式）
 ```
 
 - **review 做判断**；**lint 做体检**。review 时可顺手修明显坏链，但大量格式问题应单独 `/lint`。
-- 三个技能 **不是** 重型 compile loop：优先小步归档、必要导航、可追溯来源。
+- 五个技能 **不是** 重型 compile loop：优先小步归档、必要导航、可追溯来源。
 
 ### `/wiki` 典型输入
 

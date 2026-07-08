@@ -1,6 +1,6 @@
 ---
 name: review
-description: Review, consolidate, and reconnect wiki wiki knowledge—and spark new ideas from what you already captured. Use when the user says /review, 回顾 wiki, 复习整理, weekly review, 复盘, 整理 inbox, review_after 到期, or wants inspiration from existing notes. Complements /wiki (capture/archive), /teacher (learn new material), /lint (mechanical link/nav fix)—not a substitute for any of them.
+description: Review, consolidate, and reconnect this wiki's knowledge—and spark new ideas from what you already captured. Use when the user says /review, 回顾 wiki, 复习整理, weekly review, 复盘, 整理 inbox, review_after 到期, or wants inspiration from existing notes. Complements /wiki (capture/archive), /teacher (learn new material), /lint (mechanical link/nav fix)—not a substitute for any of them.
 ---
 
 # review

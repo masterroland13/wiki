@@ -72,7 +72,7 @@ review_after: 2026-07-15
 
 | 项目 | 说明 |
 |------|------|
-| *（按需新建 `projects/<name>/index.md`）* | 某条业务/学习线的 hub |
+| [Learning progress](./projects/learning-progress/index.md) | `/teacher` 会话记忆 hub |
 
 ## 维护技能
 
