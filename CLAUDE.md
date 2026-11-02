@@ -14,5 +14,6 @@
 | P1 | **`wiki/maps/learning-spine.md`** | 跨学科学习主轴 | 规划长期学习时 |
 | P2 | **`CLAUDE.md`** | 本文件：`@AGENTS.md` + 索引镜像 | Claude Code 会话 |
 | P2 | **`ROADMAP.md`** | 仓库工程 Backlog（可选） | 改脚本、记 Icebox 时 |
+| P2 | **`docs/README.md`** | 调研、施工计划、切片审查 | 做仓库工程升级（Slice）时 |
 
 若任务落在 `wiki/` 内，默认导航顺序：`AGENTS.md` → `wiki/WIKI_SCHEMA.md` → `wiki/index.md` → 相关 map / topic / project。
