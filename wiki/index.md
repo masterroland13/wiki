@@ -32,11 +32,7 @@ review_after: 2026-07-15
 
 ## 文艺（文学 · 影像 · 音乐）
 
-| 笔记 | 说明 |
-|------|------|
-| *（待 ingest）* | 文学：`lit-` 前缀 → `topics/` |
-| *（待 ingest）* | 电影：`film-` 前缀 → `topics/`；作品用 `entities/` |
-| *（待 ingest）* | 音乐：`music-` 前缀 → `topics/`；专辑/艺人用 `entities/` |
+这一区还没有笔记。新材料先记在 [Inbox](./inbox.md)。有内容后再归档：主题用 `lit-` / `film-` / `music-` 放进 `topics/`，作品和人物放进 `entities/`。不要为还没有内容的学科建空 topic。
 
 ## 人文
 
@@ -51,17 +47,11 @@ review_after: 2026-07-15
 
 ## 理工
 
-| 笔记 | 说明 |
-|------|------|
-| *（待 ingest）* | 计算机：`cs-` → `topics/` |
-| *（待 ingest）* | 物理：`phys-` → `topics/` |
-| *（待 ingest）* | 天文：`astro-` → `topics/` |
+这一区还没有笔记。新材料先记在 [Inbox](./inbox.md)。有内容后再用 `cs-` / `phys-` / `astro-` 写入 `topics/`。不要为还没有内容的学科建空 topic。
 
 ## 跨学科
 
-| 笔记 | 说明 |
-|------|------|
-| *（待 ingest）* | 桥梁主题：`x-` → `topics/` |
+这一区还没有主题笔记。桥梁想法先记在 [Inbox](./inbox.md)，成形后用 `x-` 写入 `topics/`。协议示例不是学科笔记，见下方「协议示例」。
 
 ## 实体（Entities）
 
@@ -90,5 +80,5 @@ review_after: 2026-07-15
 |------|------|
 | `/wiki` | 投喂 URL、截图、聊天 → 归档 |
 | `/query` | 按已有笔记回答；金标见 [retrieval cases](./evals/retrieval-cases.md) |
-| `/review` | 复盘 inbox、到期页 |
+| `/review` | 复盘 inbox、到期页；weekly 报告缺失 entity（≥2 个不同页，或用户点名） |
 | `/lint` | 坏链、导航、frontmatter；`superseded_by` 页仍被本页主推时 warning |

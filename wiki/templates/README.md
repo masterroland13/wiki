@@ -30,11 +30,15 @@
 - `project`
 - `confidence`（0.0-1.0）
 - `review_after`（建议复盘日期）
-- `date`
-- `people`
+- `date`（entity 页可以是出版、生卒、首演等自由文本，不是 lint 的日期）
+- `people`（entity 页：相关人物 entity 的相对路径，或路径列表）
+- `works`（entity 页：相关作品 entity 的相对路径，或路径列表）
+- `aliases`（entity 页：译名、原题、简称）
 - `rating`
 - `supersedes`（本页取代了哪些页的阅读位置；相对路径或列表）
 - `superseded_by`（哪些页取代了本页的阅读位置）
+
+`entity-template.md` 的 `kind` 是实体类型：`book` | `person` | `work` | `org` | `concept` | `album` | `tool`。可以省略。其它模板的 `kind` 仍是页面体裁（如 `evergreen`、`faq`），两边不要混用。这些字段都不是 lint 必填，缺了不会让全库变红。建 entity 的门槛见 [`WIKI_SCHEMA.md`](../WIKI_SCHEMA.md)「实体页」。
 
 `supersedes` / `superseded_by` 与正文里的 `## Contradictions`、`## Superseded` 都是可选的，只给高价值页用。缺了不会让 lint 失败。冲突时两边都留下，禁止静默覆盖；字段不表示哪一边为真。规则与合成示例见 [`WIKI_SCHEMA.md`](../WIKI_SCHEMA.md) 的「矛盾与取代」。
 

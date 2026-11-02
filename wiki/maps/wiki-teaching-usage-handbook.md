@@ -487,7 +487,9 @@ L2 不改无关阅读笔记正文，也不按每源 10–15 页凑数。检查�
 
 **避免重复 hub**：一个概念只建一篇 entity，多学科 topic 链向同一 entity。
 
-详见 [`wiki/entities/README.md`](../entities/README.md)。
+**建页门槛**：同一个名字要至少出现在 2 个不同的 wiki 页里（链向还不存在的 `entity-*.md`，或显式双括号 wiki 链接，或 `entity:名字`），Weekly `/review` 才把它当作缺失 entity 候选。用户当次点名也可以建。散文里反复出现的人名不算。不要为空学科建空 topic。可选字段见 [`entity-template.md`](../templates/entity-template.md)。命令：`python3 scripts/check_missing_entities.py`。
+
+详见 [`wiki/entities/README.md`](../entities/README.md) 与 [`WIKI_SCHEMA.md`](../WIKI_SCHEMA.md)「实体页」。
 
 ---
 
@@ -515,10 +517,13 @@ L2 不改无关阅读笔记正文，也不按每源 10–15 页凑数。检查�
 python3 scripts/lint_wiki.py
 python3 scripts/lint_wiki.py --strict
 python3 scripts/check_retrieval_cases.py
-python3 -m pytest scripts/test_lint_wiki.py scripts/test_check_retrieval_cases.py scripts/test_check_skill_sync.py -q
+python3 scripts/check_missing_entities.py
+python3 -m pytest scripts/test_lint_wiki.py scripts/test_check_retrieval_cases.py scripts/test_check_skill_sync.py scripts/test_check_missing_entities.py -q
 ```
 
 lint 退出码：`0` 无 error（可以有 warning）；`1` 有 error，或 `--strict` 下有 warning；`2` 用法或环境错误。`/lint` 的第一步就是第一条命令。`check_retrieval_cases.py` 同样是 0 通过、1 有格式或路径错误、2 读不到文件；它不打分，也没有 warning 档。
+
+`check_missing_entities.py` 只报告缺失 entity 候选，不建页。默认退出码 0（有候选也是 0）；`--strict` 时有候选才是 1；`--min-pages` 小于 2 时是 2。门槛是 2 个不同的 wiki 页。散文提及不算。这不是 lint 的检查。
 
 ### 技能镜像
 

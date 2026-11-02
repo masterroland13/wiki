@@ -27,6 +27,8 @@ Review 不只是「整理干净」，还要从 **已有图** 里发现新边、�
 
 - 发现冲突时禁止静默覆盖。写入 `## Contradictions` 或 supersession 字段，不裁定谁对
 - 不要编造 wiki 里不存在的页（先 grep 确认）
+- 不要因为散文里出现了名字，或脚本未达 ≥2 个不同页的门槛，就新建 entity。Weekly 的缺失 entity 以 `python3 scripts/check_missing_entities.py` 和用户当次点名为准
+- 不要为空学科建空 topic。没有笔记的分区留在 inbox
 - 不要空泛「可以多读论文」— 要具体到 map/topic/URL
 - 不要用 inspiration 代替 teacher：这里是 **从库存生问题**，不是教新课
 

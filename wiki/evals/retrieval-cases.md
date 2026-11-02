@@ -19,7 +19,7 @@
 | q02 | 人文区「笔记 1–4」链到痛苦恐惧症笔记 | 页内主旨是把痛苦排出生活。命中 `wiki/topics/phil-han-palliative-society-ch01-algophobia-notes.md` |
 | q03 | 人文区「笔记 5–10」 | 页内「幸福强制」写绩效化的幸福预期。命中 `wiki/topics/phil-han-palliative-society-notes-05-10.md` |
 | q09 | Start Here 的 Learning spine | 阶段表是先广度再深度。命中 `wiki/maps/learning-spine.md` |
-| q14 | 理工区仍是「待 ingest」 | 没有 `cs-` topic。应按失败协议回答找不到，不编造 `wiki/topics/cs-dp-intro.md` |
+| q14 | 理工区还没有笔记，索引指向 inbox | 没有 `cs-` topic。应按失败协议回答找不到，不编造 `wiki/topics/cs-dp-intro.md` |
 
 ```yaml
 cases:
@@ -93,7 +93,7 @@ cases:
     kind: intentional-miss
     question: "动态规划的入门笔记在哪？"
     expect: []
-    note: "理工分区仍是待 ingest。Schema 里的 cs-dp-intro 只是命名例子，仓库中没有这张 topic。"
+    note: "索引的理工区没有计算机笔记，只指向 inbox。Schema 里的 cs-dp-intro 只是命名例子，仓库中没有这张 topic。"
   - id: q15
     kind: intentional-miss
     question: "熵的直觉解释有没有专页？"

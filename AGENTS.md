@@ -60,7 +60,7 @@
 | **/wiki** | 投喂 URL、截图、聊天 → Raw + Wiki。**默认 L1**；L2 compile 须明示 | `.agents/skills/wiki/SKILL.md` |
 | **/query** | 按已有 wiki 页回答，引用仓库路径；找不到就明说 | `.agents/skills/query/SKILL.md` |
 | **/lint** | 坏链、导航、frontmatter 机械体检（先跑 `scripts/lint_wiki.py`） | `.agents/skills/lint/SKILL.md` |
-| **/review** | inbox 分拣、到期页复盘、灵感连接。启动先读行为记忆层；偏好不写入 topic 正文 | `.agents/skills/review/SKILL.md` |
+| **/review** | inbox 分拣、到期页复盘、灵感连接。启动先读行为记忆层；偏好不写入 topic 正文。Weekly 跑缺失 entity 扫描（≥2 个不同页，或用户点名） | `.agents/skills/review/SKILL.md` |
 | **/teacher** | 教练式学习：推导、复习、系统掌握（通用 + CS）。启动先读行为记忆层；偏好不写入 topic 正文 | `.agents/skills/teacher/SKILL.md` |
 | **/teacher-cs** | CS 别名：算法、LeetCode、面试（必读 domain-cs.md） | `.agents/skills/teacher-cs/SKILL.md` |
 
@@ -73,3 +73,5 @@
 宿主副本：`.cursor/skills/`、`.claude/skills/`、`.codex/skills/` 是 `.agents/skills/` 的镜像，不是第二份真相源。**只改 `.agents/skills/`，再把同一内容同步到这三个目录。** 不要在某一宿主副本里单独发明分歧。校验：`python3 scripts/check_skill_sync.py`（一致退出码 0；漂移退出码 1，并打印路径）。详见 `wiki/WIKI_SCHEMA.md`「技能正文的单一真相源」。
 
 冲突与取代的可选字段（`supersedes` / `superseded_by`）、`## Contradictions` / `## Superseded`，以及**禁止静默覆盖**，写在 `wiki/WIKI_SCHEMA.md`「矛盾与取代」。`/wiki` 与 `/review` 必须照做。字段不是必填。
+
+实体页的可选字段（`kind`、`aliases`、`people`、`works`）和建页门槛写在 `wiki/WIKI_SCHEMA.md`「实体页」。`/review` 的 weekly 必须跑 `python3 scripts/check_missing_entities.py`。未达 ≥2 个不同 wiki 页、用户也没有点名时，不要新建 entity，也不要为空学科建空 topic。字段不是必填，lint 不因此失败。

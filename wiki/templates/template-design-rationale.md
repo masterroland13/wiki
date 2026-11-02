@@ -33,6 +33,7 @@
 | 显式边界和反例 | 过度泛化、错误迁移 | `Boundaries / Counterexamples` |
 | 记录不确定性 | 结论僵化、难迭代 | `Open Questions / Next Verification` + `confidence` |
 | 冲突显式化，取代只留痕 | 静默改掉旧主张 | `## Contradictions`、`## Superseded`；可选 `supersedes` / `superseded_by` |
+| 实体类型可选、建页有门槛 | 人物/作品 hub 需要类型和别名，但不能一提名字就建页 | `entity-template.md` 的 `kind` / `aliases` / `people` / `works`；lint 不因此失败。门槛见 schema「实体页」 |
 | 强制互链 | 知识孤岛 | `Related` 区块 |
 
 ## 使用建议（务实版）

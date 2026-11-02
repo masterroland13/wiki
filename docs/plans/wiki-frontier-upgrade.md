@@ -5,7 +5,7 @@
 > 审查手册：[`wiki-slice-audit.md`](../handbooks/wiki-slice-audit.md)  
 > 冲突序：`AGENTS.md` / `wiki/WIKI_SCHEMA.md` > `ROADMAP.md` > 本计划 > 其它 docs  
 > 北极星：git + markdown + agent；Obsidian 最多只读  
-> 状态：2026-11-02 已确认。Slice A、Slice B、Slice C、Slice D、Slice E、Slice F 与 Slice I 已实现。未做 Slice G、H、J。  
+> 状态：2026-11-02 已确认。Slice A、Slice B、Slice C、Slice D、Slice E、Slice F、Slice H 与 Slice I 已实现。未做 Slice G、J。  
 > 日期：2026-11-02（Asia/Shanghai）
 
 ---
@@ -219,6 +219,9 @@
 - **易返工点**：WSL 模型体积；维护成本
 
 ### Slice H — Entity/Maps 强化与索引健康（可插）
+
+> 状态：2026-11-02 已实现（entity 模板可选 `kind` 枚举与 `aliases` / `people` / `works`；`/review` weekly 跑 `scripts/check_missing_entities.py`，门槛 ≥2 个不同 wiki 页，用户点名例外；散文提及不计。index 空区改指向 inbox，不建空 topic）。不要在本切片上重做。未做 Slice G、J。未改 L1 默认。未改《妥协社会》笔记正文。
+
 - **工期**：1 天  
 - **依赖闸门**：A；建议 C 后
 - **做什么**：entity 模板 typed fields；`/review` weekly 扫「提及未建 entity」（门槛 ≥2 入链或用户点名）；index 去掉长期空壳「待 ingest」或改链 inbox
@@ -226,7 +229,7 @@
 - **正向验收**：报告 missing-entity 候选；index 无误导空表
 - **反向验收**：entity 未爆炸（有门槛）
 - **落点层**：templates + review skill + index 清理
-- **测试命令**：lint + 人工看 index
+- **测试命令**：`python3 scripts/lint_wiki.py`；`python3 scripts/check_missing_entities.py`；`python3 -m pytest scripts/test_check_missing_entities.py -q`
 - **易返工点**：门槛过低
 
 ### Slice I — Skill 同步与 Canonical 校验（可插）
@@ -291,4 +294,4 @@
 - [x] 同意默认假设（未另行修订）
 - [x] 2026-11-02 确认：落盘 docs，并实现 Slice A
 
-后续切片仍遵守：不改 ingest 默认深度；不上 GraphRAG / Obsidian 写入真相源；不重写既有阅读笔记正文。未确认的切片不开工。Slice B、Slice C、Slice D、Slice E、Slice F 与 Slice I 已单独落地；Slice G、H、J 仍未开工。
+后续切片仍遵守：不改 ingest 默认深度；不上 GraphRAG / Obsidian 写入真相源；不重写既有阅读笔记正文。未确认的切片不开工。Slice B、Slice C、Slice D、Slice E、Slice F、Slice H 与 Slice I 已单独落地；Slice G、J 仍未开工。

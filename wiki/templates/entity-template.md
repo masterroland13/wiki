@@ -13,13 +13,43 @@ review_after:
 # 可选，仅高价值页。相对本页的路径。不裁定对错，也不必回填旧页。
 supersedes: []
 superseded_by: []
-kind: glossary
-date:
+# 可选。仅 entity 页的类型。省略或留空都可以，lint 不检查。
+# book | person | work | org | concept | album | tool
+kind: book
+aliases: []
+# 相关人物 / 作品的 entity 页，相对本页的路径。没有就空着，不要为了填字段建空页。
 people: []
+works: []
+# 出版、生卒、首演等自由文本。不是 lint 的 YYYY-MM-DD。
+date:
+# 个人评分，可空。
 rating:
 ---
 
 # Entity Name
+
+复制后改标题。下面的类型字段都可选，旧页不必回填。建页门槛：至少 2 个不同的 wiki 页链向或显式提及这个名字，或者用户在当次 `/review` 里点名。未达门槛不要新建。散文里反复出现的人名不算。脚本：`python3 scripts/check_missing_entities.py`。
+
+## Identity
+
+与 frontmatter 对齐。没有的项留空。
+
+- **kind**：`book` | `person` | `work` | `org` | `concept` | `album` | `tool`
+- **aliases**：译名、原题、简称
+- **date**：
+- **rating**：
+
+## People
+
+相关人物。每条是已经存在的 `wiki/entities/entity-*.md`，写相对本页的路径。没有就不写。
+
+- 
+
+## Works
+
+相关作品（书、专辑、影片或其它 work）。同样只链已经存在的 entity。没有就留空。
+
+- 
 
 ## Working Definition
 
