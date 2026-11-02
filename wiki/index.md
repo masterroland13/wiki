@@ -2,7 +2,7 @@
 type: map
 status: growing
 created: 2026-06-30
-updated: 2026-06-30
+updated: 2026-11-02
 tags:
   - wiki
   - index
@@ -79,5 +79,6 @@ review_after: 2026-07-15
 | 技能 | 触发 |
 |------|------|
 | `/wiki` | 投喂 URL、截图、聊天 → 归档 |
+| `/query` | 按已有笔记回答；金标见 [retrieval cases](./evals/retrieval-cases.md) |
 | `/review` | 复盘 inbox、到期页 |
 | `/lint` | 坏链、导航、frontmatter |

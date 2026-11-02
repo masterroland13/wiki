@@ -176,13 +176,14 @@ wiki/topics/、wiki/entities/、wiki/papers/
 
 ## Agent 技能
 
-本仓库有五个定制技能，Canonical 定义在 `.agents/skills/`（Cursor / Claude / Codex 各有副本）。
+本仓库有六个定制技能，Canonical 定义在 `.agents/skills/`（Cursor / Claude / Codex 各有副本）。
 
 ### 技能对照表
 
 | 技能 | 用途 | Cursor 怎么说 | Claude Code | Codex |
 |------|------|---------------|-------------|-------|
 | **/wiki** | 新 URL、截图、聊天 → Raw + topic + 导航 | 「投喂 wiki」「归档进 wiki」 | `/wiki` | `$wiki` |
+| **/query** | 用已有页回答，引用仓库路径；找不到就明说 | 「/query」「问 wiki」「根据笔记回答」 | `/query` | `$query` |
 | **/review** | inbox 分拣、到期页复盘、灵感连接 | 「/review」「复盘 inbox」 | `/review` | `$review` |
 | **/lint** | 坏链、孤岛页、frontmatter 机械体检 | 「lint 一下」「整理 wiki」 | `/lint` | `$lint` |
 | **/teacher** | 教练式学习：推导、复习、系统掌握 | `/teacher` / 教练式学习 | `/teacher` | `$teacher` |
@@ -192,13 +193,14 @@ wiki/topics/、wiki/entities/、wiki/papers/
 
 ```
 新输入 ──→ /wiki（归档）
+已有笔记要答案 ──→ /query（引用路径；找不到就说 I can't find）
 还不会/要推导 ──→ /teacher 或 /teacher-cs（CS）
-已有笔记 ──→ /review（语义整理、互链、灵感）
+已有笔记要整理 ──→ /review（语义整理、互链、灵感）
 机械问题 ──→ /lint（链接、导航、格式）
 ```
 
-- **review 做判断**；**lint 做体检**。review 时可顺手修明显坏链，但大量格式问题应单独 `/lint`。
-- 五个技能 **不是** 重型 compile loop：优先小步归档、必要导航、可追溯来源。
+- **query 只读已有页并引用路径**；**review 做判断**；**lint 做体检**。
+- 六个技能 **不是** 重型 compile loop：优先小步归档、必要导航、可追溯来源。没有向量库，也不把 `references/raw/` 当默认答案源。
 
 ### `/wiki` 典型输入
 
@@ -218,6 +220,19 @@ wiki/topics/、wiki/entities/、wiki/papers/
 | 「复习 / 考我」 | Recall 模式 |
 | 「还能写什么」 | Inspiration pass：矛盾、空白、跨 topic 桥梁 |
 | 未指定 | 默认 Weekly（15–30 分钟） |
+
+### `/query` 怎么问
+
+1. 先读 `wiki/index.md`，再打开相关 map / project，然后打开 topic / entity
+2. 答案列出读过的仓库路径
+3. 没有页就说 **I can't find**（找不到），不编造路径
+4. 值得留下的答案只提议写回，不自动改完整库
+
+金标在 [`wiki/evals/retrieval-cases.md`](../evals/retrieval-cases.md)。检查期望路径是否存在：
+
+```bash
+python3 scripts/check_retrieval_cases.py
+```
 
 ### `/lint` 检查项
 
@@ -478,10 +493,11 @@ Agent 默认 **L1 标准**；你可口头覆盖：
 ```bash
 python3 scripts/lint_wiki.py
 python3 scripts/lint_wiki.py --strict
-python3 -m pytest scripts/test_lint_wiki.py -q
+python3 scripts/check_retrieval_cases.py
+python3 -m pytest scripts/test_lint_wiki.py scripts/test_check_retrieval_cases.py -q
 ```
 
-退出码：`0` 无 error（可以有 warning）；`1` 有 error，或 `--strict` 下有 warning；`2` 用法或环境错误。`/lint` 的第一步就是第一条命令。
+lint 退出码：`0` 无 error（可以有 warning）；`1` 有 error，或 `--strict` 下有 warning；`2` 用法或环境错误。`/lint` 的第一步就是第一条命令。`check_retrieval_cases.py` 同样是 0 通过、1 有格式或路径错误、2 读不到文件；它不打分，也没有 warning 档。
 
 ### 图片路径验收
 

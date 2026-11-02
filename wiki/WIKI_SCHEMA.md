@@ -27,12 +27,15 @@
 | `wiki/papers/` | 单篇论文阅读笔记 |
 | `wiki/projects/` | 按项目归档的知识 |
 | `wiki/templates/` | 新页骨架 |
+| `wiki/evals/` | `/query` 金标（不是知识页） |
 
 ## 默认导航协议
 
 1. 读 `wiki/index.md`
 2. 读相关 `wiki/maps/` 或 `wiki/projects/`
 3. 再进入 `wiki/topics/`、`wiki/entities/` 等叶子页
+
+回答已有笔记（`/query`）也按这个顺序，并在答案里引用仓库路径。找不到就停，不编造路径。见 `.agents/skills/query/SKILL.md`。
 
 ## 学科 slug 前缀（建议）
 
@@ -65,15 +68,33 @@
 3. 大改动：在 `changelog.md` 顶部记一条
 4. 体检：按需 `/lint`（先跑 `python3 scripts/lint_wiki.py`，再看脚本不管的导航与模板结构）；语义整理用 `/review`
 
-## 与 `/wiki` · `/lint` · `/review` · `/teacher` 的配合
+## 与 `/wiki` · `/query` · `/lint` · `/review` · `/teacher` 的配合
 
 | 技能 | 何时 |
 |------|------|
 | **/wiki** | 新 URL、截图、聊天、JD → Raw + topic + 导航 |
+| **/query** | 用已有 wiki 页回答：index → map/topic，引用仓库路径；找不到就明说 |
 | **/review** | inbox、到期页、`growing`/`stale` → 提炼、互链 |
 | **/lint** | 先跑 `scripts/lint_wiki.py`，再查导航与模板结构；语义矛盾不在此技能 |
 | **/teacher** | 还不会、要推导、系统学习（通用 + CS，见 `domain-cs.md`） |
 | **/teacher-cs** | 同上，CS 触发别名（算法、LeetCode、面试） |
+
+## 检索（`/query`）
+
+不另建向量库。默认也不对 `references/raw/` 做 RAG。
+
+1. 读 `wiki/index.md`，再打开相关 map / project，然后打开 topic / entity
+2. 答案列出读过的仓库路径
+3. 没有能支撑回答的页：写明 **I can't find**（找不到），不编造路径
+4. 高价值答案可以提议写回；不自动改完整库，不借答题改写既有阅读笔记正文
+
+金标：[`evals/retrieval-cases.md`](./evals/retrieval-cases.md)。检查格式和期望路径（故意缺失的题目标成 `intentional-miss`，期望路径为空）：
+
+```bash
+python3 scripts/check_retrieval_cases.py
+```
+
+这个脚本不回答问题，也不调用 embedding。抽检目标是 ≥70% 打开期望页，或明确说找不到。
 
 ## YAML frontmatter（按需）
 
@@ -107,9 +128,10 @@ python3 -m pytest scripts/test_lint_wiki.py -q
 | 范围 | 行为 |
 |------|------|
 | `wiki/**/*.md` | 检查行内相对链接与图片。跳过 fenced code、行内代码、带 scheme 的 URL、`//`、纯锚点，以及路径里含 `<` `>` `*` 的占位符 |
-| 知识页 | 检查 frontmatter。不含 `wiki/changelog.md`、`wiki/WIKI_SCHEMA.md`、任意 `README.md`、`wiki/templates/template-design-rationale.md`、`wiki/references/**` |
+| 知识页 | 检查 frontmatter。不含 `wiki/changelog.md`、`wiki/WIKI_SCHEMA.md`、任意 `README.md`、`wiki/templates/template-design-rationale.md`、`wiki/references/**`、`wiki/evals/**` |
 | `wiki/templates/**` | 仍检查 frontmatter；不把骨架链接当断链。模板按复制后的目录写相对路径（项目笔记在 `wiki/projects/<name>/`），`example-*.md` 故意不存在 |
-| orphan 候选 | 除 `wiki/index.md` 与 `wiki/templates/**` 外，没有其它 wiki 页用 Markdown 链入 |
+| `wiki/evals/**` | 金标，不是知识页：不查 frontmatter，也不当 orphan。仍检查相对链接 |
+| orphan 候选 | 除 `wiki/index.md`、`wiki/templates/**` 与 `wiki/evals/**` 外，没有其它 wiki 页用 Markdown 链入 |
 
 只解析文件开头的 frontmatter。正文里后来的 `---` 块不是元数据。未列出的键（`title`、`confidence`、`project` 等）不导致失败。
 

@@ -53,15 +53,16 @@
 | 技能 | 用途 | Canonical 路径 |
 |------|------|----------------|
 | **/wiki** | 投喂 URL、截图、聊天 → Raw + Wiki | `.agents/skills/wiki/SKILL.md` |
+| **/query** | 按已有 wiki 页回答，引用仓库路径；找不到就明说 | `.agents/skills/query/SKILL.md` |
 | **/lint** | 坏链、导航、frontmatter 机械体检（先跑 `scripts/lint_wiki.py`） | `.agents/skills/lint/SKILL.md` |
 | **/review** | inbox 分拣、到期页复盘、灵感连接 | `.agents/skills/review/SKILL.md` |
 | **/teacher** | 教练式学习：推导、复习、系统掌握（通用 + CS） | `.agents/skills/teacher/SKILL.md` |
 | **/teacher-cs** | CS 别名：算法、LeetCode、面试（必读 domain-cs.md） | `.agents/skills/teacher-cs/SKILL.md` |
 
-| 环境 | wiki | lint | review | teacher | teacher-cs |
-|------|------|------|--------|---------|------------|
-| **Cursor** | 说「投喂 wiki / /wiki / 归档进 wiki」 | 说「整理 wiki / lint 一下」 | 说「/review / 复盘 inbox」 | `/teacher` / 教练式学习 | `/teacher-cs` / 教我做题 / 算法教练 |
-| **Claude Code** | `/wiki` | `/lint` | `/review` | `/teacher` | `/teacher-cs` |
-| **Codex** | `$wiki` | `$lint` | `$review` | `$teacher` | `$teacher-cs` |
+| 环境 | wiki | query | lint | review | teacher | teacher-cs |
+|------|------|-------|------|--------|---------|------------|
+| **Cursor** | 说「投喂 wiki / /wiki / 归档进 wiki」 | 说「/query / 问 wiki / 根据笔记回答」 | 说「整理 wiki / lint 一下」 | 说「/review / 复盘 inbox」 | `/teacher` / 教练式学习 | `/teacher-cs` / 教我做题 / 算法教练 |
+| **Claude Code** | `/wiki` | `/query` | `/lint` | `/review` | `/teacher` | `/teacher-cs` |
+| **Codex** | `$wiki` | `$query` | `$lint` | `$review` | `$teacher` | `$teacher-cs` |
 
 宿主副本：`.cursor/skills/`、`.claude/skills/`、`.codex/skills/` 与 `.agents/skills/` 保持同步。

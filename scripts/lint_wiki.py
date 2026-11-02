@@ -39,7 +39,10 @@ FRONTMATTER_EXEMPT_EXACT = {
     "wiki/WIKI_SCHEMA.md",
     "wiki/templates/template-design-rationale.md",
 }
-FRONTMATTER_EXEMPT_PREFIXES = ("wiki/references/",)
+FRONTMATTER_EXEMPT_PREFIXES = (
+    "wiki/references/",
+    "wiki/evals/",
+)
 
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 LINK_RE = re.compile(r"!?\[[^\]\n]*\]\(([^)\n]+)\)")
@@ -114,7 +117,7 @@ def requires_frontmatter(rel: str) -> bool:
 
 def is_orphan_candidate(rel: str) -> bool:
     """Templates are scaffolds. index.md is the navigation root."""
-    if rel == "wiki/index.md" or rel.startswith("wiki/templates/"):
+    if rel == "wiki/index.md" or rel.startswith(("wiki/templates/", "wiki/evals/")):
         return False
     return True
 

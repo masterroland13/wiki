@@ -198,6 +198,21 @@ def test_orphan_candidate_reports_path_and_spares_linked_pages(tmp_path: Path) -
     assert result.errors == []
 
 
+def test_evals_are_structural_not_knowledge_pages(tmp_path: Path) -> None:
+    write(tmp_path, "wiki/evals/retrieval-cases.md", "# Retrieval cases\n\nNo frontmatter.\n")
+    write(tmp_path, "wiki/index.md", page("Root only.\n", type="map"))
+    result = lint_wiki.lint_root(tmp_path)
+    assert result.findings == []
+
+    write(tmp_path, "wiki/evals/retrieval-cases.md", "See [missing](./missing.md).\n")
+    result = lint_wiki.lint_root(tmp_path)
+    assert any(
+        item.path == "wiki/evals/retrieval-cases.md" and "broken relative link: ./missing.md" in item.message
+        for item in result.errors
+    )
+    assert not any("frontmatter" in item.message for item in result.findings)
+
+
 def test_index_and_templates_are_not_orphan_candidates(tmp_path: Path) -> None:
     write(tmp_path, "wiki/index.md", page("Root only.\n", type="map"))
     write(tmp_path, "wiki/templates/unused.md", page("Scaffold.\n"))
