@@ -68,6 +68,19 @@ description: Answer from this wiki by reading wiki/index.md, then maps and topic
 - 与已有页冲突时禁止静默覆盖；按 schema 写矛盾块或 supersession 字段
 - 不借这次回答改写既有阅读笔记正文（例如《妥协社会》各篇）
 
+## 操作日志
+
+回答结束（包括「I can't find」）后，在 `wiki/log.md` **顶部**追加一条。这是操作流水，不是知识回写。知识回写仍先提议，用户同意后再改页。
+
+```text
+## [YYYY-MM-DD] query | 问题的一行摘要
+
+- result: answered 或 I can't find
+- read: 实际打开过的仓库路径
+```
+
+不要把这条写进 `wiki/changelog.md`。不要为了记日志去改 topic 正文。
+
 ## 不做
 
 - 不引入 embedding / 向量库 / QMD / GraphRAG

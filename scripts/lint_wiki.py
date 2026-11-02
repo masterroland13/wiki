@@ -37,6 +37,7 @@ REVIEW_STATUSES = {"growing", "stale"}
 # Structural docs are not knowledge pages. They are still link-checked.
 FRONTMATTER_EXEMPT_EXACT = {
     "wiki/changelog.md",
+    "wiki/log.md",
     "wiki/WIKI_SCHEMA.md",
     "wiki/templates/template-design-rationale.md",
 }

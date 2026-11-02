@@ -9,6 +9,7 @@
 
 ## 已完成
 
+- 2026-11-02：Slice D 操作日志 [`wiki/log.md`](wiki/log.md) + 可选 L2 compile（默认仍 L1；级联限于相关 entity / map / index / log）。未做 Slice E–J。
 - 2026-11-02：Slice C 矛盾与取代（可选 `supersedes` / `superseded_by`，模板两节，合成示例，index 主推 warning）。不自动裁定对错。
 - 2026-11-02：Slice B `/query` + 检索金标（[`wiki/evals/retrieval-cases.md`](wiki/evals/retrieval-cases.md)，[`scripts/check_retrieval_cases.py`](scripts/check_retrieval_cases.py)）。未上向量检索。
 - 2026-11-02：Slice A 机器 lint（[`scripts/lint_wiki.py`](scripts/lint_wiki.py) + pytest）；`/lint` 先跑脚本。计划见 [`docs/plans/wiki-frontier-upgrade.md`](docs/plans/wiki-frontier-upgrade.md)

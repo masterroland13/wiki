@@ -5,7 +5,7 @@
 > 审查手册：[`wiki-slice-audit.md`](../handbooks/wiki-slice-audit.md)  
 > 冲突序：`AGENTS.md` / `wiki/WIKI_SCHEMA.md` > `ROADMAP.md` > 本计划 > 其它 docs  
 > 北极星：git + markdown + agent；Obsidian 最多只读  
-> 状态：2026-11-02 已确认。Slice A、Slice B 与 Slice C 已实现。未做 Slice D–J。  
+> 状态：2026-11-02 已确认。Slice A、Slice B、Slice C 与 Slice D 已实现。未做 Slice E–J。  
 > 日期：2026-11-02（Asia/Shanghai）
 
 ---
@@ -61,6 +61,7 @@
 | Research/Plans | `docs/research/`、`docs/plans/`（新建） | 落盘调研与本计划（用户确认后） |
 | ROADMAP | `ROADMAP.md` | 每阶段末更新 Icebox/完成项 |
 | Changelog | `wiki/changelog.md` | 结构性变更追加；非每笔 ops |
+| Ops log | `wiki/log.md` | ingest / query / lint 时序；默认 L1 不写 ingest |
 
 禁止：把检索/校验逻辑焊进聊天散文 skill 而无脚本真源；禁止把行为偏好写进 `topics/` 正文（F 后路由明确）。
 
@@ -158,6 +159,9 @@
 - **易返工点**：字段过多导致 ingest 摩擦 → 严格可选
 
 ### Slice D — Ops Log + 可选 L2 Ingest 级联
+
+> 状态：2026-11-02 已实现（`wiki/log.md` 与 changelog 职责分离；`/wiki` 默认 L1，L2 compile 须明示并只级联相关 entity / map / index + 一条 ingest log）。不要在本切片上重做。未做 Slice E–J。
+
 - **工期**：1–2 天  
 - **依赖闸门**：A；C 协议已写入 wiki skill 更佳（可弱依赖）
 - **做什么**：
@@ -278,4 +282,4 @@
 - [x] 同意默认假设（未另行修订）
 - [x] 2026-11-02 确认：落盘 docs，并实现 Slice A
 
-后续切片仍遵守：不改 ingest 默认深度；不上 GraphRAG / Obsidian 写入真相源；不重写既有阅读笔记正文。未确认的切片不开工。Slice B 与 Slice C 已单独落地；Slice D–J 仍未开工。
+后续切片仍遵守：不改 ingest 默认深度；不上 GraphRAG / Obsidian 写入真相源；不重写既有阅读笔记正文。未确认的切片不开工。Slice B、Slice C 与 Slice D 已单独落地；Slice E–J 仍未开工。

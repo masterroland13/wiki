@@ -294,6 +294,45 @@ def test_template_placeholder_links_are_not_errors(tmp_path: Path) -> None:
     assert result.warnings == []
 
 
+def test_ops_log_without_frontmatter_is_not_a_frontmatter_error(tmp_path: Path) -> None:
+    write(
+        tmp_path,
+        "wiki/log.md",
+        "\n".join(
+            [
+                "# Wiki Operations Log",
+                "",
+                "See [changelog](./changelog.md).",
+                "",
+                "## [2026-11-02] ingest | L2 dry-run — synthetic example-widget",
+                "",
+                "- expected entity: `wiki/entities/entity-example-widget.md`",
+                "- expected map: `wiki/maps/learning-spine.md`",
+                "- expected index: `wiki/index.md`",
+                "",
+            ]
+        ),
+    )
+    write(tmp_path, "wiki/changelog.md", "# Wiki Changelog\n")
+    write(tmp_path, "wiki/index.md", page("See [log](./log.md).\n", type="map"))
+    assert lint_wiki.requires_frontmatter("wiki/log.md") is False
+    assert lint_wiki.requires_frontmatter("wiki/changelog.md") is False
+    result = lint_wiki.lint_root(tmp_path)
+    assert result.errors == []
+    assert not any(item.path == "wiki/log.md" for item in result.findings)
+
+
+def test_repository_ops_log_is_exempt_and_documents_l2_dry_run() -> None:
+    log = (REPO_ROOT / "wiki/log.md").read_text(encoding="utf-8")
+    index = (REPO_ROOT / "wiki/index.md").read_text(encoding="utf-8")
+    assert lint_wiki.requires_frontmatter("wiki/log.md") is False
+    assert "## [2026-11-02] ingest | L2 dry-run — synthetic example-widget" in log
+    assert "entity-example-widget.md" in log
+    assert "learning-spine.md" in log
+    assert "默认" in log and "L1" in log
+    assert "](./log.md)" in index
+
+
 def test_repository_has_no_errors() -> None:
     result = lint_wiki.lint_root(REPO_ROOT)
     assert result.errors == []

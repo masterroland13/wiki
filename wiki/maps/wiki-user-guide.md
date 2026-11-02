@@ -86,7 +86,8 @@ review_after: 2026-08-01
 | 路径 | 作用 |
 |------|------|
 | `wiki/index.md` | **总入口**：主题索引表 |
-| `wiki/changelog.md` | 结构性变更记录（非每笔必写） |
+| `wiki/changelog.md` | 结构性变更记录（非每笔必写；不要改成操作日志） |
+| `wiki/log.md` | ingest / query / lint 时序。默认 L1 不写 ingest 条目 |
 | `wiki/inbox.md` | 可选：尚未归档的待办清单 |
 | `wiki/maps/` | 主题地图、学习路线、工作流说明（**本手册在此**） |
 | `wiki/roadmaps/` | 细分路线（如某学科子路线） |
@@ -206,7 +207,7 @@ wiki/topics/、wiki/entities/、wiki/papers/
 
 | 输入 | Agent 行为 |
 |------|------------|
-| 文章 URL | 评估 L0/L1/L2 → 必要时 Raw → topic → index/map |
+| 文章 URL | 默认 L1：必要时 Raw → 一篇 topic → index 或 map 一条入口。说出「L2 / 深挖 / compile / 级联」才级联 entity + map + index，并写 `wiki/log.md` |
 | 截图 / 幻灯片（无 URL） | 几乎总是 Raw + 结构化转写 |
 | 聊天摘要 / JD / 论文摘要 | 按 archive-depth 定档 |
 | TrendRadar 摘要 | 走专用路由，不随意开 deep-dive topic |
@@ -247,7 +248,7 @@ python3 scripts/lint_wiki.py
 1. `wiki/index.md` 和相关 map 能否找到新内容
 2. 页面是否落在合适目录
 3. 是否满足模板 MVP：结论 + 来源 + Related
-4. 必要时补 `wiki/changelog.md`
+4. 结构性变更才补 `wiki/changelog.md`。`/lint` 收尾另写一条 `wiki/log.md`（`lint`），不要把操作流水写进 changelog
 5. `growing` / `stale` 的 `confidence` 仍人工看；缺 `review_after` 由脚本报 warning
 6. 带 `superseded_by` 仍被 `wiki/index.md` 直接链接时，脚本报 warning。从 index 拿掉链接并保留该页。不要删页，也不要改写主张来消掉这条 warning
 
@@ -375,7 +376,7 @@ python3 scripts/ingest_url_to_raw.py 'https://…' --fetch-images
 
 1. 读 `wiki/index.md` 或 `grep` 相关关键词
 2. **extend** 已有 topic：新段落 + 更新 `updated` + 补 `sources`
-3. **新建** topic：主题独立、会反复检索、或 L2 深读
+3. **新建** topic：主题独立、会反复检索。用户已要求 L2 时也可以新建；默认 L1 不因此级联其它页
 
 ---
 
@@ -415,19 +416,21 @@ python3 scripts/ingest_url_to_raw.py 'https://…' --fetch-images
 
 ## 归档深度 L0 / L1 / L2
 
-Agent 默认 **L1 标准**；你可口头覆盖：
+Agent 默认 **L1 标准**。来源看起来重要也不会自动升级。你可口头覆盖：
 
 | 你说 | 档位 |
 |------|------|
 | 「只要 Raw」 | L0 |
-| 「标准 wiki」 / 默认 | L1 |
-| 「深挖」 | L2 |
+| 「标准 wiki」 / 什么都不说 | L1（不写 `wiki/log.md`，不级联 entity） |
+| 「L2」「深挖」「compile」「级联」 | L2 compile |
 
 | 档位 | 典型输入 | Raw | Wiki | 导航 |
 |------|----------|-----|------|------|
 | **L0 片段** | 单图/单段、无 URL | 必做 | 短段并入已有 topic 或 seed | 仅当新主题 |
-| **L1 标准** | URL、文章摘要 | 长/杂/重要时必做 | topic-ingest 模板 | index 或 map |
-| **L2 深读** | 高价值技术文、明确要求深挖 | 全文或精读摘录 | 完整 Assessment + Boundary + Actionable | index + map + changelog |
+| **L1 标准** | URL、文章摘要 | 长/杂/重要时必做 | topic-ingest 模板 | index **或** map 一条入口 |
+| **L2 深读（compile）** | 你明示要深挖或级联 | 全文或精读摘录 | 完整 Assessment + Boundary + Actionable | 相关 entity + 相关 map + index + `wiki/log.md` 一条 `ingest`。changelog 仅结构变更 |
+
+L2 不改无关阅读笔记正文，也不按每源 10–15 页凑数。检查清单在 `/wiki` skill 的「L2 dry-run」。
 
 ### confidence 粗算（growing / stale 页）
 
@@ -451,14 +454,16 @@ Agent 默认 **L1 标准**；你可口头覆盖：
 3. **项目**：`wiki/projects/<name>/index.md`
 4. **叶子**：topic / entity / paper
 
-### 何时更新 index / changelog
+### 何时更新 index / changelog / log
 
-| 变更 | index | changelog |
-|------|-------|-----------|
-| 新 topic，值得反复找到 | ✅ | 可选 |
-| 新 map / 大结构调整 | ✅ | ✅ |
-| 仅给已有 topic 补一段 | 可选 | 通常不需要 |
-| 合并 / 删除页 | ✅ | ✅ |
+| 变更 | index | changelog | `wiki/log.md` |
+|------|-------|-----------|---------------|
+| 新 topic，值得反复找到（默认 L1） | 一条入口，或只写 map | 不写 | 不写 |
+| 用户明示 L2 compile | 对应分区一行 | 不写（除非同时改了 schema） | 一条 `ingest` |
+| 新 map / 大结构调整 | ✅ | ✅ | 不写 |
+| 仅给已有 topic 补一段 | 可选 | 不写 | 不写 |
+| `/query` 或 `/lint` 结束 | 不写 | 不写 | 一条 `query` 或 `lint` |
+| 合并 / 删除页 | ✅ | ✅ | 不写 |
 
 ### Related 链接
 

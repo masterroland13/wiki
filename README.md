@@ -21,7 +21,8 @@
 wiki/
 ├── index.md          # 总导航
 ├── inbox.md          # 待归档
-├── changelog.md
+├── changelog.md      # 结构性变更
+├── log.md            # ingest / query / lint；默认 L1 不写 ingest
 ├── maps/ topics/ entities/ projects/ papers/ templates/
 ├── evals/            # /query 金标
 references/
