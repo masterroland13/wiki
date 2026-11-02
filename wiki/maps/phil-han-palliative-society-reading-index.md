@@ -9,6 +9,7 @@ tags:
   - han-byung-chul
 sources:
   - ../entities/entity-book-palliative-society.md
+review_after: 2026-12-02
 ---
 
 # 《妥协社会》· 阅读笔记索引
