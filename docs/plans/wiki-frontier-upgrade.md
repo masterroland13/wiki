@@ -5,7 +5,7 @@
 > 审查手册：[`wiki-slice-audit.md`](../handbooks/wiki-slice-audit.md)  
 > 冲突序：`AGENTS.md` / `wiki/WIKI_SCHEMA.md` > `ROADMAP.md` > 本计划 > 其它 docs  
 > 北极星：git + markdown + agent；Obsidian 最多只读  
-> 状态：2026-11-02 已确认。本轮只施工 **Slice A**。  
+> 状态：2026-11-02 已确认。Slice A 与 Slice B 已实现。未做 Slice C–J。  
 > 日期：2026-11-02（Asia/Shanghai）
 
 ---
@@ -115,6 +115,9 @@
 - **易返工点**：历史页大量 warn → baseline allowlist 或分批修；YAML 边缘语法；Windows/WSL 路径
 
 ### Slice B — `/query` Skill + 迷你检索评测集
+
+> 状态：2026-11-02 已实现（`.agents/skills/query/SKILL.md`、`wiki/evals/retrieval-cases.md`、`scripts/check_retrieval_cases.py`）。不要在本切片上重做。
+
 - **工期**：1–2 天  
 - **依赖闸门**：A 完成（index/链接健康更可信）；可与 F 并行概念工作，但技能落盘在 A 后
 - **做什么**：
@@ -272,4 +275,4 @@
 - [x] 同意默认假设（未另行修订）
 - [x] 2026-11-02 确认：落盘 docs，并实现 Slice A
 
-后续切片仍遵守：不改 ingest 默认深度；不上 GraphRAG / Obsidian 写入真相源；不重写既有阅读笔记正文。未确认的切片不开工。
+后续切片仍遵守：不改 ingest 默认深度；不上 GraphRAG / Obsidian 写入真相源；不重写既有阅读笔记正文。未确认的切片不开工。Slice B 已单独落地；Slice C–J 仍未开工。

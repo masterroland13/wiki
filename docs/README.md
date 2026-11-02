@@ -10,11 +10,12 @@
 
 ## 当前范围
 
-已落地文档，并实现 **Slice A**（机器 lint）。Slice B–J 未做。
+已落地文档。**Slice A**（机器 lint）与 **Slice B**（`/query` + 检索金标）已实现。Slice C–J 未做。
 
 ```bash
 python3 scripts/lint_wiki.py
-python3 -m pytest scripts/test_lint_wiki.py -q
+python3 scripts/check_retrieval_cases.py
+python3 -m pytest scripts/test_lint_wiki.py scripts/test_check_retrieval_cases.py -q
 ```
 
 退出码、必填字段和 warning 规则见 [`wiki/WIKI_SCHEMA.md`](../wiki/WIKI_SCHEMA.md) 的「机器规则子集」。`/lint` 必须先跑上面的脚本。

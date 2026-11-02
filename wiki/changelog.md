@@ -4,8 +4,12 @@ Newest entries at the top.
 
 ## 2026-11-02
 
+- **Slice B**：新增 `/query`（`.agents/skills/query/SKILL.md`，并同步 Cursor / Claude / Codex）。流程是 index → map/topic，答案引用仓库路径；找不到必须说 **I can't find**，不编造路径。高价值答案只提议回写。
+- 新增 [`evals/retrieval-cases.md`](evals/retrieval-cases.md)（15 题，含释义问法与故意缺失）和 `scripts/check_retrieval_cases.py`。不引入向量库，不把 `references/raw/` 当默认检索源。
+- `wiki/evals/` 不参与 frontmatter / orphan 检查，仍检查相对链接。未做 Slice C–J，未改阅读笔记正文。
+
 - 落盘前沿调研、升级计划与切片审查手册，索引见 [`docs/README.md`](../docs/README.md)。
-- **Slice A**：新增 `scripts/lint_wiki.py`（frontmatter、相对链接、orphan 候选、`growing`/`stale` 缺 `review_after`）与 `scripts/test_lint_wiki.py`。机器规则写在 `WIKI_SCHEMA.md`。`/lint` 改为先跑脚本。未做 Slice B–J。
+- **Slice A**：新增 `scripts/lint_wiki.py`（frontmatter、相对链接、orphan 候选、`growing`/`stale` 缺 `review_after`）与 `scripts/test_lint_wiki.py`。机器规则写在 `WIKI_SCHEMA.md`。`/lint` 改为先跑脚本。
 - 补齐 `wiki/projects/learning-progress/` 两页所缺必填 frontmatter。未改阅读笔记正文。`growing` 且缺 `review_after` 的既有页保持 warning。
 
 ## 2026-07-08
