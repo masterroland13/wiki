@@ -9,6 +9,7 @@ tags:
   - book
 sources:
   - https://weread.qq.com/book-detail?type=1&v=3300043023
+review_after: 2026-12-02
 ---
 
 # 《妥协社会：今日之痛》

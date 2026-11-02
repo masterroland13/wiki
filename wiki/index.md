@@ -22,7 +22,7 @@ review_after: 2026-07-15
 
 | 页面 | 用途 |
 |------|------|
-| [**使用手册**](./maps/wiki-user-guide.md) | 完整上手说明：工作流、技能、模板、归档 |
+| [**wiki教学与使用手册**](./maps/wiki-teaching-usage-handbook.md) | 完整上手说明：工作流、技能、模板、归档 |
 | [Schema](./WIKI_SCHEMA.md) | 目录布局、前缀、维护习惯 |
 | [Changelog](./changelog.md) | 结构性变更记录 |
 | [操作日志](./log.md) | ingest / query / lint 时序。默认 L1 不写 ingest 条目 |

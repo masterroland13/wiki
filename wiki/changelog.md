@@ -4,6 +4,8 @@ Newest entries at the top.
 
 ## 2026-11-02
 
+- 上手手册的阅读入口改为 [`maps/wiki-teaching-usage-handbook.md`](maps/wiki-teaching-usage-handbook.md)（标题「wiki教学与使用手册」）。[`maps/wiki-user-guide.md`](maps/wiki-user-guide.md) 留短跳转并标 `superseded_by`，不再从 [`index.md`](index.md) 主推。
+
 - **Slice I**：技能正文的单一真相源是 `.agents/skills/`。新增 `scripts/check_skill_sync.py`，按文件 SHA-256 对照 `.cursor/skills/`、`.claude/skills/`、`.codex/skills/`。只改 canonical 再同步镜像；宿主副本不是第二份原文。漂移退出码 1 并打印路径；一致为 0。`/lint` 把它列为可选附加检查，不改变 `lint_wiki.py` 的契约。未做 Slice G、H、J。未改 L1 默认、`log.md` 协议、source-clock 与行为记忆路由。
 
 - **Slice F**：`wiki/projects/learning-progress/` 定为行为记忆层（偏好、纠错、教学进度）。事实仍在 topics / entities。写入路由在 [`WIKI_SCHEMA.md`](WIKI_SCHEMA.md)「行为记忆与写入路由」，并链到 [`projects/learning-progress/README.md`](projects/learning-progress/README.md)。`/teacher` 与 `/review` 启动时先读该层。禁止把偏好写进 topic 正文。不要求 Mem0 / Letta / 云记忆。索引只在「项目」轻链 hub，偏好页不进主题分区。
