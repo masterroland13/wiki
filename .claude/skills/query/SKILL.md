@@ -22,8 +22,9 @@ description: Answer from this wiki by reading wiki/index.md, then maps and topic
 
 1. 读 `wiki/index.md`。
 2. 从索引里选出相关的 `wiki/maps/` 或 `wiki/projects/`，读完再打开 `wiki/topics/`、`wiki/entities/` 等叶子页。
-3. 只根据**实际打开过**的页面作答。
-4. 答案里列出读过的**仓库路径**（相对仓库根，例如 `wiki/topics/foo.md`）。没打开的文件不要写进引用。
+3. `wiki/projects/learning-progress/` 是行为记忆，不是主题索引，也不是事实的单一真相源。概念、读书结论不要用这里的偏好页当证据。只有问题明确在问偏好、纠错或教学进度时才打开它，并在答案里标明这是行为记忆。
+4. 只根据**实际打开过**的页面作答。
+5. 答案里列出读过的**仓库路径**（相对仓库根，例如 `wiki/topics/foo.md`）。没打开的文件不要写进引用。
 
 金标与路径检查见 `wiki/evals/retrieval-cases.md`。抽检目标：至少 70% 的题打开期望页，或者明确说找不到。编造路径算失败。`python3 scripts/check_retrieval_cases.py` 只检查金标格式和期望路径是否存在，它不回答问题。
 
@@ -67,6 +68,7 @@ description: Answer from this wiki by reading wiki/index.md, then maps and topic
 - 不自动全库改写
 - 与已有页冲突时禁止静默覆盖；按 schema 写矛盾块或 supersession 字段
 - 不借这次回答改写既有阅读笔记正文（例如《妥协社会》各篇）
+- 偏好、纠错、教学进度不要写进 topic 正文；那一类回写目标是 `wiki/projects/learning-progress/`（见 `wiki/WIKI_SCHEMA.md`「行为记忆与写入路由」）
 
 ## 操作日志
 

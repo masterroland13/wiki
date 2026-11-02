@@ -10,9 +10,12 @@ description: Review, consolidate, and reconnect this wiki's knowledge—and spar
 ## 先读
 
 1. `AGENTS.md`
-2. `wiki/WIKI_SCHEMA.md`（两段式工作流、frontmatter、`review_after`）
+2. `wiki/WIKI_SCHEMA.md`（两段式工作流、frontmatter、`review_after`，以及「行为记忆与写入路由」）
 3. `wiki/index.md`
-4. 按需：`wiki/inbox.md`、用户指定的 map / project
+4. **行为记忆层（复盘之前必读）**：`wiki/projects/learning-progress/README.md`（写入路由），然后 `wiki/projects/learning-progress/index.md`，再按需 `learner-profile.md`。这是偏好、纠错、教学进度，不是主题事实，也不是主题索引
+5. 按需：`wiki/inbox.md`、用户指定的 map / project
+
+发现的偏好、纠错、「下次怎么教」写回 `wiki/projects/learning-progress/`。**禁止**写进 topic、entity、paper 的正文。可复用事实仍进 `topics/` / `entities/`。不要求 Mem0、Letta 或云端记忆。合成对照：事实 `wiki/topics/x-demo-fact-vs-preference.md`，偏好 `wiki/projects/learning-progress/preferences/demo-hint-first.md`。
 
 ## 与其它技能的分工
 
@@ -80,6 +83,8 @@ Review 时对每个候选页问：
 - **link** — 补 Related、map、index 入口；不新建页
 - **defer** — 仍有价值但未成熟 → 更新 `review_after`、`confidence`
 - **drop** — 无复用价值，从 inbox 移除（说明理由）
+
+候选若是学习者偏好、纠错或教学进度：写入 `wiki/projects/learning-progress/`，不要 promote 进 topic 正文。候选若是可复用事实：仍 promote 到 `topics/` / `entities/` / `maps/`，不要写进行为记忆层冒充事实。
 
 ### 4. 更新 frontmatter
 

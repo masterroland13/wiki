@@ -26,7 +26,7 @@
 | `wiki/topics/` | 主题笔记（概念、读书记录、方法等） |
 | `wiki/entities/` | 术语 / 作品 / 人物等短定义页 |
 | `wiki/papers/` | 单篇论文阅读笔记 |
-| `wiki/projects/` | 按项目归档的知识 |
+| `wiki/projects/` | 按项目归档的知识。其中 `learning-progress/` 是行为记忆层，不是主题事实 |
 | `wiki/templates/` | 新页骨架 |
 | `wiki/evals/` | `/query` 金标（不是知识页） |
 
@@ -36,7 +36,35 @@
 2. 读相关 `wiki/maps/` 或 `wiki/projects/`
 3. 再进入 `wiki/topics/`、`wiki/entities/` 等叶子页
 
-回答已有笔记（`/query`）也按这个顺序，并在答案里引用仓库路径。找不到就停，不编造路径。见 `.agents/skills/query/SKILL.md`。
+回答已有笔记（`/query`）也按这个顺序，并在答案里引用仓库路径。找不到就停，不编造路径。见 `.agents/skills/query/SKILL.md`。事实题不从行为记忆层起读。
+
+`/teacher`、`/teacher-cs` 与 `/review` 在讲课或复盘之前，额外读下一节的行为记忆层。那一步不改变上面的主题导航，也不把该层当成 `index.md` 的主题主入口。
+
+## 行为记忆与写入路由
+
+`wiki/projects/learning-progress/` 是**行为记忆层**：学习者偏好、纠错、教学进度。可复用事实（概念、读书结论、可引用主张）留在 `wiki/topics/`、`wiki/entities/`、`wiki/papers/`，导航留在 `wiki/maps/` 与 `wiki/index.md`。
+
+本层**不是**知识的单一真相源，也**不是**主题索引。`wiki/index.md` 可以在「项目」里轻链 hub（[`projects/learning-progress/index.md`](./projects/learning-progress/index.md)）。不要把偏好页放进文艺、人文、理工、跨学科这些主题分区。不要求 Mem0、Letta 或任何云端记忆；本层就是仓库里的 Markdown，可 git 审计。
+
+本地说明与同一张路由表：[`projects/learning-progress/README.md`](./projects/learning-progress/README.md)。若两处表述不一致，以本节为准。
+
+**禁止**把行为偏好写进 topic、entity、paper 的正文。一句里既有测量结果又有「下次怎么教我」，拆开：结果进 topic，教法进本层。
+
+### 写入路由
+
+| 写什么 | 写到哪里 | 不要写到哪里 |
+|--------|----------|----------------|
+| 可复用事实、概念、读书结论、可引用主张 | `wiki/topics/`、`wiki/entities/`、`wiki/papers/`；导航在 `wiki/maps/` 与 `wiki/index.md` | `wiki/projects/learning-progress/` |
+| 学习者偏好（节奏、语言、要提示还是要结论、纠错口吻） | `wiki/projects/learning-progress/`（`learner-profile.md` 或 `preferences/`） | topic / entity / paper 正文 |
+| 纠错与「下次怎么教」 | 同上 | topic / entity / paper 正文 |
+| 教学进度、场景水平、未完成任务 | `wiki/projects/learning-progress/`（hub，以及已有的 `scenes/` 等） | topic / entity / paper 正文 |
+| 原始材料 | `references/raw/` 或 `references/papers/` | 不把偏好改写成 raw，也不把 raw 改成偏好 |
+| 一次 ingest / query / lint | `wiki/log.md`（动词与默认 L1 规则见「操作日志与 changelog」，本层不新增动词） | 不把偏好当成一条 log |
+| 目录约定或 schema 变更 | `wiki/changelog.md` | 不把一次教学偏好写成结构性变更 |
+
+`/teacher` 与 `/review` 启动时先读本层（README 的路由表、hub、learner profile；场景页按需），再讲课或复盘。`/wiki` 归档事实时走 topic，不把偏好塞进 topic。`/query` 回答事实时不把本层当证据；只有问题明确在问偏好、纠错或进度时才打开它，并标明这是行为记忆。
+
+合成示例（虚构，不是阅读笔记）：事实在 [`topics/x-demo-fact-vs-preference.md`](./topics/x-demo-fact-vs-preference.md)（北窗焦点块的小时完成数）；偏好在 [`projects/learning-progress/preferences/demo-hint-first.md`](./projects/learning-progress/preferences/demo-hint-first.md)（先给提示、单次不超过 25 分钟、先用中文纠正）。两边互链，偏好不写进 topic 正文。
 
 ## 学科 slug 前缀（建议）
 
@@ -76,9 +104,9 @@
 |------|------|
 | **/wiki** | 新 URL、截图、聊天、JD → Raw + topic + 导航。**默认 L1**。用户说出「L2 / 深挖 / compile / 级联」才走 L2 compile（相关 entity、相关 map、index + 一条 ingest log）。与已有页冲突时禁止静默覆盖，须写矛盾块或 supersession 字段 |
 | **/query** | 用已有 wiki 页回答：index → map/topic，引用仓库路径；找不到就明说。页与页冲突时并列引用，不选边。结束时在 `log.md` 追加一条 `query`（不是知识回写） |
-| **/review** | inbox、到期页、`growing`/`stale` → 提炼、互链。冲突时禁止静默覆盖，须写矛盾块或 supersession 字段 |
+| **/review** | inbox、到期页、`growing`/`stale` → 提炼、互链。启动时先读行为记忆层。冲突时禁止静默覆盖，须写矛盾块或 supersession 字段。偏好与纠错写回 `learning-progress/`，不写进 topic 正文 |
 | **/lint** | 先跑 `scripts/lint_wiki.py`，再查导航与模板结构。脚本会警告 `superseded_by` 页仍被 `wiki/index.md` 主推。哪一边为真不在此技能。结束时在 `log.md` 追加一条 `lint`（记下 error / warning 数），不要为此再跑一轮 lint |
-| **/teacher** | 还不会、要推导、系统学习（通用 + CS，见 `domain-cs.md`） |
+| **/teacher** | 还不会、要推导、系统学习（通用 + CS，见 `domain-cs.md`）。启动时先读行为记忆层。偏好不写进 topic 正文 |
 | **/teacher-cs** | 同上，CS 触发别名（算法、LeetCode、面试） |
 
 ## 检索（`/query`）
@@ -203,6 +231,8 @@ python3 -m pytest scripts/test_lint_wiki.py -q
 | `supersedes` 或 `superseded_by` 不是字符串，也不是字符串列表 | warning。消息：`{字段} must be a path or a list of paths` |
 | 上述字段里像路径的条目不存在 | warning。消息：`{字段} path not found: {条目}`。不像路径的标签跳过 |
 | `wiki/` 外的 source 文件，其 mtime 本地日历日期晚于 `updated` | warning。消息：`source '{路径}' is newer than updated ({源日期} > {updated}); consider status: stale`。不写回 `status` |
+| `wiki/projects/learning-progress/` 这个目录存在，但缺少 `README.md` | warning。消息：`learning-progress README.md is missing (write-routing table)`。目录不存在则不查 |
+| 该 `README.md` 存在，但没有标题 `## 写入路由` | warning。消息：`learning-progress README.md is missing the write-routing table`。不因此让全库失败 |
 
 `tags` 与 `sources` 可以是空列表。`seed` / `stable` 可以不写 `review_after`。`supersedes` 与 `superseded_by` 可以省略、为空字符串或空列表。
 
@@ -249,6 +279,17 @@ python3 -m pytest scripts/test_lint_wiki.py -q
 **时区与截断**
 
 比较的是两个日历日期，不是时刻。本地时区由运行环境决定（`datetime.fromtimestamp`）。跨时区或靠近午夜时，WSL 与 Windows 可能差一天。检出仓库会刷新 mtime。`wiki/` 外、且被 `sources` 点名的文件，可能因此显得比页上的 `updated` 新。这仍只是 warning。默认退出码不因此变成失败；`--strict` 时它和其它 warning 一样会让退出码变成 1。
+
+### 行为记忆路由表（存在性）
+
+只在 `wiki/projects/learning-progress/` **已经是目录**时检查。临时夹具和尚未采用该层的仓库没有这个目录，就不发下面的 warning。
+
+| 情况 | 消息 |
+|------|------|
+| 没有 `README.md` | `learning-progress README.md is missing (write-routing table)` |
+| 有 `README.md`，正文没有标题 `## 写入路由` | `learning-progress README.md is missing the write-routing table` |
+
+两条都是 warning，不是 error。默认退出码不因此变成失败。脚本不创建文件，也不把路由表写进 topic。标题按子串匹配；写在 fenced code 里也算有这份标题，人仍应让它出现在正文。
 
 ### 退出码
 

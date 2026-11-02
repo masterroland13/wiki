@@ -655,3 +655,79 @@ def test_already_stale_status_is_not_rewritten_when_source_is_newer(tmp_path: Pa
         "(2026-08-02 > 2026-08-01); consider status: stale"
         for item in result.warnings
     )
+
+
+def test_missing_learning_progress_directory_is_not_a_routing_warning(tmp_path: Path) -> None:
+    write(tmp_path, "wiki/index.md", page("Index.\n", type="map"))
+    result = lint_wiki.lint_root(tmp_path)
+    assert result.errors == []
+    assert not any("write-routing" in item.message for item in result.warnings)
+
+
+def test_learning_progress_without_readme_warns_and_exits_zero(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    write(
+        tmp_path,
+        "wiki/projects/learning-progress/index.md",
+        page("Hub.\n", type="project-note"),
+    )
+    write(
+        tmp_path,
+        "wiki/index.md",
+        page("See [hub](./projects/learning-progress/index.md).\n", type="map"),
+    )
+    code = lint_wiki.main(["--root", str(tmp_path)])
+    out = capsys.readouterr().out
+    assert code == 0
+    assert "errors=0" in out
+    assert lint_wiki.MISSING_ROUTING_README in out
+    result = lint_wiki.lint_root(tmp_path)
+    assert result.errors == []
+    assert any(
+        item.severity == "warning"
+        and item.path == "wiki/projects/learning-progress/README.md"
+        and item.message == lint_wiki.MISSING_ROUTING_README
+        for item in result.findings
+    )
+
+
+def test_learning_progress_readme_without_routing_heading_warns(tmp_path: Path) -> None:
+    write(tmp_path, "wiki/projects/learning-progress/README.md", "# Memory\n\nNo table yet.\n")
+    write(tmp_path, "wiki/index.md", page("See [readme](./projects/learning-progress/README.md).\n", type="map"))
+    result = lint_wiki.lint_root(tmp_path)
+    assert result.errors == []
+    assert any(item.message == lint_wiki.MISSING_ROUTING_TABLE for item in result.warnings)
+    assert not any(item.message == lint_wiki.MISSING_ROUTING_README for item in result.warnings)
+
+
+def test_learning_progress_readme_with_routing_heading_is_quiet(tmp_path: Path) -> None:
+    write(
+        tmp_path,
+        "wiki/projects/learning-progress/README.md",
+        "# Memory\n\n## 写入路由\n\n| 写什么 | 写到哪里 |\n|--------|----------|\n| 事实 | topics |\n",
+    )
+    write(tmp_path, "wiki/index.md", page("See [readme](./projects/learning-progress/README.md).\n", type="map"))
+    result = lint_wiki.lint_root(tmp_path)
+    assert result.errors == []
+    assert not any("write-routing" in item.message for item in result.warnings)
+
+
+def test_repository_slice_f_separates_fact_and_preference() -> None:
+    readme = (REPO_ROOT / "wiki/projects/learning-progress/README.md").read_text(encoding="utf-8")
+    schema = (REPO_ROOT / "wiki/WIKI_SCHEMA.md").read_text(encoding="utf-8")
+    agents = (REPO_ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    index = (REPO_ROOT / "wiki/index.md").read_text(encoding="utf-8")
+    fact = (REPO_ROOT / "wiki/topics/x-demo-fact-vs-preference.md").read_text(encoding="utf-8")
+    pref = (REPO_ROOT / "wiki/projects/learning-progress/preferences/demo-hint-first.md").read_text(encoding="utf-8")
+    assert "## 写入路由" in readme
+    assert "## 行为记忆与写入路由" in schema
+    assert "wiki/projects/learning-progress/" in agents
+    assert "x-demo-fact-vs-preference.md" in index
+    assert "demo-hint-first.md" not in index
+    assert "projects/learning-progress/index.md" in index
+    assert "3.2" in fact and "2.1" in fact
+    assert "先给提示" in pref
+    assert "3.2" not in pref
+    result = lint_wiki.lint_root(REPO_ROOT)
+    assert not any("write-routing" in item.message for item in result.findings)

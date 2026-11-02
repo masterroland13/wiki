@@ -10,7 +10,7 @@
 
 ## 当前范围
 
-已落地文档。**Slice A**（机器 lint）、**Slice B**（`/query` + 检索金标）、**Slice C**（矛盾与取代协议）、**Slice D**（`wiki/log.md` + 可选 L2 compile，默认仍 L1）与 **Slice E**（source-clock stale warning，不写回 status）已实现。Slice F–J 未做。
+已落地文档。**Slice A**（机器 lint）、**Slice B**（`/query` + 检索金标）、**Slice C**（矛盾与取代协议）、**Slice D**（`wiki/log.md` + 可选 L2 compile，默认仍 L1）、**Slice E**（source-clock stale warning，不写回 status）与 **Slice F**（`wiki/projects/learning-progress/` 行为记忆层与写入路由；不要求 Mem0）已实现。Slice G–J 未做。
 
 ```bash
 python3 scripts/lint_wiki.py

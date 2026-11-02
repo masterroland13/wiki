@@ -188,6 +188,7 @@ def lint_root(root: Path) -> LintResult:
             add("warning", rel, "orphan candidate (no inbound markdown link from another wiki page)")
 
     warn_index_promoted_superseded(pages, page_rel, texts, superseded_rels, add)
+    warn_learning_progress_routing(root, add)
 
     findings.sort(key=lambda item: (0 if item.severity == "error" else 1, item.path, item.message))
     return LintResult(len(pages), frontmatter_pages, findings)
@@ -307,6 +308,33 @@ def ref_target_exists(md_file: Path, item: str) -> bool:
     if not dest:
         return True
     return resolve_relative(md_file, dest).is_file()
+
+
+MISSING_ROUTING_README = "learning-progress README.md is missing (write-routing table)"
+MISSING_ROUTING_TABLE = "learning-progress README.md is missing the write-routing table"
+ROUTING_HEADING = "## 写入路由"
+
+
+def warn_learning_progress_routing(root: Path, add) -> None:
+    """Warn when the behavioral-memory directory exists without its routing README.
+
+    Absence of the directory is not a finding. Temporary fixtures and repos that
+    have not adopted the layer stay quiet. Warnings never fail the default run.
+    """
+    directory = root / "wiki" / "projects" / "learning-progress"
+    if not directory.is_dir():
+        return
+    readme = directory / "README.md"
+    rel = "wiki/projects/learning-progress/README.md"
+    if not readme.is_file():
+        add("warning", rel, MISSING_ROUTING_README)
+        return
+    try:
+        text = readme.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        return
+    if ROUTING_HEADING not in text:
+        add("warning", rel, MISSING_ROUTING_TABLE)
 
 
 def warn_index_promoted_superseded(pages, page_rel, texts, superseded_rels: list[str], add) -> None:
