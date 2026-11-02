@@ -97,6 +97,7 @@
 3. 结构性变更：在 `changelog.md` 顶部记一条。小补丁和默认 L1 归档不必写
 4. 操作流水：写在 `log.md`（见下节）。不要把 changelog 当成 ops log
 5. 体检：按需 `/lint`（先跑 `python3 scripts/lint_wiki.py`，再看脚本不管的导航与模板结构）；语义整理用 `/review`
+6. 技能：只改 `.agents/skills/`，再同步宿主镜像，并用 `python3 scripts/check_skill_sync.py` 核对。不要把某一宿主副本当成另一份原文
 
 ## 与 `/wiki` · `/query` · `/lint` · `/review` · `/teacher` 的配合
 
@@ -105,9 +106,29 @@
 | **/wiki** | 新 URL、截图、聊天、JD → Raw + topic + 导航。**默认 L1**。用户说出「L2 / 深挖 / compile / 级联」才走 L2 compile（相关 entity、相关 map、index + 一条 ingest log）。与已有页冲突时禁止静默覆盖，须写矛盾块或 supersession 字段 |
 | **/query** | 用已有 wiki 页回答：index → map/topic，引用仓库路径；找不到就明说。页与页冲突时并列引用，不选边。结束时在 `log.md` 追加一条 `query`（不是知识回写） |
 | **/review** | inbox、到期页、`growing`/`stale` → 提炼、互链。启动时先读行为记忆层。冲突时禁止静默覆盖，须写矛盾块或 supersession 字段。偏好与纠错写回 `learning-progress/`，不写进 topic 正文 |
-| **/lint** | 先跑 `scripts/lint_wiki.py`，再查导航与模板结构。脚本会警告 `superseded_by` 页仍被 `wiki/index.md` 主推。哪一边为真不在此技能。结束时在 `log.md` 追加一条 `lint`（记下 error / warning 数），不要为此再跑一轮 lint |
+| **/lint** | 先跑 `scripts/lint_wiki.py`，再查导航与模板结构。脚本会警告 `superseded_by` 页仍被 `wiki/index.md` 主推。哪一边为真不在此技能。结束时在 `log.md` 追加一条 `lint`（记下 error / warning 数），不要为此再跑一轮 lint。改过技能后可选再跑 `scripts/check_skill_sync.py`（不改变 lint 的退出码约定） |
 | **/teacher** | 还不会、要推导、系统学习（通用 + CS，见 `domain-cs.md`）。启动时先读行为记忆层。偏好不写进 topic 正文 |
 | **/teacher-cs** | 同上，CS 触发别名（算法、LeetCode、面试） |
+
+## 技能正文的单一真相源
+
+技能正文的 canonical 是 `.agents/skills/`。[`scripts/check_skill_sync.py`](../scripts/check_skill_sync.py) 按文件做 SHA-256 对照。`.cursor/skills/`、`.claude/skills/`、`.codex/skills/` 只是宿主镜像，不是第二份真相源。
+
+**只改 `.agents/skills/`，再把同一内容同步到三个宿主目录。** 不要在某一宿主副本里单独改出分歧，也不要把镜像当成该改的原文。
+
+空目录不参与比较。跳过 `__pycache__/`、`.DS_Store`、`*.pyc`。不跟随目录符号链接。
+
+```bash
+python3 scripts/check_skill_sync.py
+```
+
+| 码 | 含义 |
+|----|------|
+| 0 | 每个镜像文件都与 `.agents/skills/` 的字节一致 |
+| 1 | 漂移：内容哈希不同、镜像缺文件，或镜像多出 canonical 没有的文件。标准输出打印这些路径（`DIFFERS` / `MISSING` / `EXTRA`） |
+| 2 | 用法错误，或找不到 canonical 目录 `.agents/skills/` |
+
+漂移是 error，不是 warning。没有「只警告仍退出 0」的模式。这个脚本不修改 `scripts/lint_wiki.py` 的契约；`/lint` 可以在机器 lint 之外再跑它。
 
 ## 检索（`/query`）
 

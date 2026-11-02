@@ -10,12 +10,13 @@
 
 ## 当前范围
 
-已落地文档。**Slice A**（机器 lint）、**Slice B**（`/query` + 检索金标）、**Slice C**（矛盾与取代协议）、**Slice D**（`wiki/log.md` + 可选 L2 compile，默认仍 L1）、**Slice E**（source-clock stale warning，不写回 status）与 **Slice F**（`wiki/projects/learning-progress/` 行为记忆层与写入路由；不要求 Mem0）已实现。Slice G–J 未做。
+已落地文档。**Slice A**（机器 lint）、**Slice B**（`/query` + 检索金标）、**Slice C**（矛盾与取代协议）、**Slice D**（`wiki/log.md` + 可选 L2 compile，默认仍 L1）、**Slice E**（source-clock stale warning，不写回 status）、**Slice F**（`wiki/projects/learning-progress/` 行为记忆层与写入路由；不要求 Mem0）与 **Slice I**（`.agents/skills/` 为 canonical；`scripts/check_skill_sync.py` 对照 Cursor / Claude / Codex 镜像）已实现。Slice G、H、J 未做。
 
 ```bash
 python3 scripts/lint_wiki.py
 python3 scripts/check_retrieval_cases.py
-python3 -m pytest scripts/test_lint_wiki.py scripts/test_check_retrieval_cases.py -q
+python3 scripts/check_skill_sync.py
+python3 -m pytest scripts/ -q
 ```
 
 退出码、必填字段和 warning 规则见 [`wiki/WIKI_SCHEMA.md`](../wiki/WIKI_SCHEMA.md) 的「机器规则子集」。`/lint` 必须先跑上面的脚本。

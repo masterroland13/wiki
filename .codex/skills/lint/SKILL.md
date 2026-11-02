@@ -55,4 +55,14 @@ description: Light maintenance for this wiki—navigation, links, frontmatter, a
 
 本技能不改 ingest 默认深度，不引入检索栈，也不把 Obsidian 当成写入真相源。
 
-技能正文只改 `.agents/skills/lint/SKILL.md`，再同步到 `.cursor/skills/lint/`、`.claude/skills/lint/`、`.codex/skills/lint/`。
+## 可选附加检查（不改变上面的契约）
+
+机器 lint 的退出码只来自 `scripts/lint_wiki.py`。改过技能正文后，可以再跑：
+
+```bash
+python3 scripts/check_skill_sync.py
+```
+
+它对照 `.agents/skills/` 与 `.cursor/skills/`、`.claude/skills/`、`.codex/skills/` 的文件哈希。一致退出码 0；漂移退出码 1，并打印不一致路径。这不是 `lint_wiki.py` 的 warning，也不要把它算进 `wiki/log.md` 的 lint 计数。规则见 `wiki/WIKI_SCHEMA.md`「技能正文的单一真相源」。
+
+技能正文只改 `.agents/skills/`（本文件是 `.agents/skills/lint/SKILL.md`），再同步到 `.cursor/skills/`、`.claude/skills/`、`.codex/skills/`。不要在某一宿主副本里单独改。
