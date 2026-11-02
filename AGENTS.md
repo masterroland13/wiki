@@ -69,6 +69,6 @@
 | **Claude Code** | `/wiki` | `/query` | `/lint` | `/review` | `/teacher` | `/teacher-cs` |
 | **Codex** | `$wiki` | `$query` | `$lint` | `$review` | `$teacher` | `$teacher-cs` |
 
-宿主副本：`.cursor/skills/`、`.claude/skills/`、`.codex/skills/` 与 `.agents/skills/` 保持同步。
+宿主副本：`.cursor/skills/`、`.claude/skills/`、`.codex/skills/` 是 `.agents/skills/` 的镜像，不是第二份真相源。**只改 `.agents/skills/`，再把同一内容同步到这三个目录。** 不要在某一宿主副本里单独发明分歧。校验：`python3 scripts/check_skill_sync.py`（一致退出码 0；漂移退出码 1，并打印路径）。详见 `wiki/WIKI_SCHEMA.md`「技能正文的单一真相源」。
 
 冲突与取代的可选字段（`supersedes` / `superseded_by`）、`## Contradictions` / `## Superseded`，以及**禁止静默覆盖**，写在 `wiki/WIKI_SCHEMA.md`「矛盾与取代」。`/wiki` 与 `/review` 必须照做。字段不是必填。

@@ -28,5 +28,5 @@ wiki/
 references/
 ├── raw/              # 原件收件箱
 └── papers/           # PDF（可选）
-.agents/skills/       # wiki · query · lint · review · teacher
+.agents/skills/       # 技能正文 canonical（.cursor/.claude/.codex 只做镜像）
 ```

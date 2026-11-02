@@ -5,7 +5,7 @@
 > 审查手册：[`wiki-slice-audit.md`](../handbooks/wiki-slice-audit.md)  
 > 冲突序：`AGENTS.md` / `wiki/WIKI_SCHEMA.md` > `ROADMAP.md` > 本计划 > 其它 docs  
 > 北极星：git + markdown + agent；Obsidian 最多只读  
-> 状态：2026-11-02 已确认。Slice A、Slice B、Slice C、Slice D、Slice E 与 Slice F 已实现。未做 Slice G–J。  
+> 状态：2026-11-02 已确认。Slice A、Slice B、Slice C、Slice D、Slice E、Slice F 与 Slice I 已实现。未做 Slice G、H、J。  
 > 日期：2026-11-02（Asia/Shanghai）
 
 ---
@@ -230,6 +230,9 @@
 - **易返工点**：门槛过低
 
 ### Slice I — Skill 同步与 Canonical 校验（可插）
+
+> 状态：2026-11-02 已实现（`scripts/check_skill_sync.py`、pytest；Schema 与 AGENTS 规定只改 `.agents/skills/` 再同步镜像）。不要在本切片上重做。
+
 - **工期**：0.5 天  
 - **依赖闸门**：无；建议每改 skill 后跑
 - **做什么**：`scripts/check_skill_sync.py`：`.agents/skills` vs `.cursor/.claude/.codex` 哈希；文档规定只改 `.agents` 再同步
@@ -237,7 +240,7 @@
 - **正向验收**：故意改副本能被抓出
 - **反向验收**：无
 - **落点层**：`scripts/` + AGENTS/ROADMAP（勾掉 Icebox 对应项）
-- **测试命令**：`python scripts/check_skill_sync.py`
+- **测试命令**：`python3 scripts/check_skill_sync.py`；`python3 -m pytest scripts/test_check_skill_sync.py -q`
 - **易返工点**：无
 
 ### Slice J — 轻量只读浏览（可选，最低优先）
@@ -288,4 +291,4 @@
 - [x] 同意默认假设（未另行修订）
 - [x] 2026-11-02 确认：落盘 docs，并实现 Slice A
 
-后续切片仍遵守：不改 ingest 默认深度；不上 GraphRAG / Obsidian 写入真相源；不重写既有阅读笔记正文。未确认的切片不开工。Slice B、Slice C、Slice D、Slice E 与 Slice F 已单独落地；Slice G–J 仍未开工。
+后续切片仍遵守：不改 ingest 默认深度；不上 GraphRAG / Obsidian 写入真相源；不重写既有阅读笔记正文。未确认的切片不开工。Slice B、Slice C、Slice D、Slice E、Slice F 与 Slice I 已单独落地；Slice G、H、J 仍未开工。

@@ -180,7 +180,7 @@ wiki/topics/、wiki/entities/、wiki/papers/
 
 ## Agent 技能
 
-本仓库有六个定制技能，Canonical 定义在 `.agents/skills/`（Cursor / Claude / Codex 各有副本）。
+本仓库有六个定制技能。Canonical 只在 `.agents/skills/`。只改这里，再同步到 `.cursor/skills/`、`.claude/skills/`、`.codex/skills/`。不要把某一宿主副本当成另一份原文。核对：`python3 scripts/check_skill_sync.py`。
 
 ### 技能对照表
 
@@ -513,10 +513,18 @@ L2 不改无关阅读笔记正文，也不按每源 10–15 页凑数。检查�
 python3 scripts/lint_wiki.py
 python3 scripts/lint_wiki.py --strict
 python3 scripts/check_retrieval_cases.py
-python3 -m pytest scripts/test_lint_wiki.py scripts/test_check_retrieval_cases.py -q
+python3 -m pytest scripts/test_lint_wiki.py scripts/test_check_retrieval_cases.py scripts/test_check_skill_sync.py -q
 ```
 
 lint 退出码：`0` 无 error（可以有 warning）；`1` 有 error，或 `--strict` 下有 warning；`2` 用法或环境错误。`/lint` 的第一步就是第一条命令。`check_retrieval_cases.py` 同样是 0 通过、1 有格式或路径错误、2 读不到文件；它不打分，也没有 warning 档。
+
+### 技能镜像
+
+```bash
+python3 scripts/check_skill_sync.py
+```
+
+对照 `.agents/skills/` 与 `.cursor/skills/`、`.claude/skills/`、`.codex/skills/`。退出码：`0` 按文件哈希一致；`1` 漂移（打印路径）；`2` 用法错误或找不到 canonical 目录。这不是 `lint_wiki.py` 的检查。只改 `.agents/skills/`，再同步三份镜像。
 
 ### 图片路径验收
 
