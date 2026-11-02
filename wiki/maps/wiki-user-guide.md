@@ -2,7 +2,7 @@
 type: map
 status: growing
 created: 2026-06-30
-updated: 2026-06-30
+updated: 2026-11-02
 tags:
   - wiki
   - guide
@@ -221,11 +221,19 @@ wiki/topics/、wiki/entities/、wiki/papers/
 
 ### `/lint` 检查项
 
+先跑机器 lint（规则见 [`WIKI_SCHEMA.md`](../WIKI_SCHEMA.md)「机器规则子集」）：
+
+```bash
+python3 scripts/lint_wiki.py
+```
+
+脚本之后再看它不管的部分：
+
 1. `wiki/index.md` 和相关 map 能否找到新内容
 2. 页面是否落在合适目录
-3. 相对链接、图片路径、frontmatter 是否明显有错
-4. 是否满足模板 MVP：结论 + 来源 + Related
-5. 必要时补 `wiki/changelog.md`
+3. 是否满足模板 MVP：结论 + 来源 + Related
+4. 必要时补 `wiki/changelog.md`
+5. `growing` / `stale` 的 `confidence` 仍人工看；缺 `review_after` 由脚本报 warning
 
 ---
 
@@ -465,6 +473,16 @@ Agent 默认 **L1 标准**；你可口头覆盖：
 
 ## 脚本与验收
 
+### 机器 lint
+
+```bash
+python3 scripts/lint_wiki.py
+python3 scripts/lint_wiki.py --strict
+python3 -m pytest scripts/test_lint_wiki.py -q
+```
+
+退出码：`0` 无 error（可以有 warning）；`1` 有 error，或 `--strict` 下有 warning；`2` 用法或环境错误。`/lint` 的第一步就是第一条命令。
+
 ### 图片路径验收
 
 ```bash
@@ -480,7 +498,7 @@ scripts/wiki_verify_images.sh wiki/topics/*.md
 - [ ] 新页目录正确；`sources` 可追溯
 - [ ] 至少一个入口（index / map / project）可到达
 - [ ] 图片文件存在、相对路径正确、有 alt
-- [ ] 可选：跑 `wiki_verify_images.sh` 或 `/lint`
+- [ ] 跑 `python3 scripts/lint_wiki.py`（`/lint` 的第一步）
 
 ---
 
@@ -526,7 +544,7 @@ Agent 会：Raw + 结构化转写 → 短 topic 或并入已有页。
 
 ### 链接红了 / 找不到新写的页
 
-说「**lint 一下**」或「**整理 wiki**」。
+说「**lint 一下**」或「**整理 wiki**」。Agent 会先跑 `python3 scripts/lint_wiki.py`，再看导航。
 
 ### 我想规划跨学科学习
 

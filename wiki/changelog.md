@@ -2,6 +2,12 @@
 
 Newest entries at the top.
 
+## 2026-11-02
+
+- 落盘前沿调研、升级计划与切片审查手册，索引见 [`docs/README.md`](../docs/README.md)。
+- **Slice A**：新增 `scripts/lint_wiki.py`（frontmatter、相对链接、orphan 候选、`growing`/`stale` 缺 `review_after`）与 `scripts/test_lint_wiki.py`。机器规则写在 `WIKI_SCHEMA.md`。`/lint` 改为先跑脚本。未做 Slice B–J。
+- 补齐 `wiki/projects/learning-progress/` 两页所缺必填 frontmatter。未改阅读笔记正文。`growing` 且缺 `review_after` 的既有页保持 warning。
+
 ## 2026-07-08
 
 - 从 [caapapx/teacher](https://github.com/caapapx/teacher) 安装 **`/teacher`** skill（含 `references/`、`evals/`）；`letsgo` 语境改为 **wiki 仓库**。

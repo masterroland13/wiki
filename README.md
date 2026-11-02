@@ -6,12 +6,13 @@
 - **入口**：[`wiki/index.md`](wiki/index.md)
 - **规则**：[`wiki/WIKI_SCHEMA.md`](wiki/WIKI_SCHEMA.md)
 - **维护说明**：[`AGENTS.md`](AGENTS.md)
+- **工程文档**：[`docs/README.md`](docs/README.md)（调研 / 计划 / 审查）
 
 ## 快速开始
 
 1. 新材料 → 对话中说「投喂 wiki」或 `/wiki`
 2. 待整理 → 先记 [`wiki/inbox.md`](wiki/inbox.md)，每周 `/review`
-3. 体检 → 「lint 一下 wiki」
+3. 体检 → 「lint 一下 wiki」，或先跑 `python3 scripts/lint_wiki.py`
 
 ## 目录概览
 

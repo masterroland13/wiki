@@ -22,6 +22,7 @@
 | P1 | **`wiki/maps/learning-spine.md`** | 跨学科学习主轴（阶段 → Wiki 链接） | 规划长期学习、补 topic 时 |
 | P2 | **`CLAUDE.md`** | `@AGENTS.md` + 索引镜像 | Claude Code 会话 |
 | P2 | **`ROADMAP.md`** | 仓库工程 Backlog（可选） | 评估工具、记 Icebox 时 |
+| P2 | **`docs/README.md`** | 调研、施工计划、切片审查 | 做仓库工程升级（Slice）时 |
 
 **维护约定**
 
@@ -52,7 +53,7 @@
 | 技能 | 用途 | Canonical 路径 |
 |------|------|----------------|
 | **/wiki** | 投喂 URL、截图、聊天 → Raw + Wiki | `.agents/skills/wiki/SKILL.md` |
-| **/lint** | 坏链、导航、frontmatter 机械体检 | `.agents/skills/lint/SKILL.md` |
+| **/lint** | 坏链、导航、frontmatter 机械体检（先跑 `scripts/lint_wiki.py`） | `.agents/skills/lint/SKILL.md` |
 | **/review** | inbox 分拣、到期页复盘、灵感连接 | `.agents/skills/review/SKILL.md` |
 | **/teacher** | 教练式学习：推导、复习、系统掌握（通用 + CS） | `.agents/skills/teacher/SKILL.md` |
 | **/teacher-cs** | CS 别名：算法、LeetCode、面试（必读 domain-cs.md） | `.agents/skills/teacher-cs/SKILL.md` |

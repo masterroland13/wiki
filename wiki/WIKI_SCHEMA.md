@@ -63,7 +63,7 @@
 1. 新材料：可进 `references/raw/`；复用结论写在 `wiki/`，并链回 Raw
 2. 导航：从 `index.md` 或 map 链到值得反复打开的页
 3. 大改动：在 `changelog.md` 顶部记一条
-4. 体检：按需 `/lint`；语义整理用 `/review`
+4. 体检：按需 `/lint`（先跑 `python3 scripts/lint_wiki.py`，再看脚本不管的导航与模板结构）；语义整理用 `/review`
 
 ## 与 `/wiki` · `/lint` · `/review` · `/teacher` 的配合
 
@@ -71,7 +71,7 @@
 |------|------|
 | **/wiki** | 新 URL、截图、聊天、JD → Raw + topic + 导航 |
 | **/review** | inbox、到期页、`growing`/`stale` → 提炼、互链 |
-| **/lint** | 坏链、孤岛页、frontmatter、图片路径 |
+| **/lint** | 先跑 `scripts/lint_wiki.py`，再查导航与模板结构；语义矛盾不在此技能 |
 | **/teacher** | 还不会、要推导、系统学习（通用 + CS，见 `domain-cs.md`） |
 | **/teacher-cs** | 同上，CS 触发别名（算法、LeetCode、面试） |
 
@@ -85,6 +85,60 @@
 `growing` / `stale` 建议补 `confidence`（0.0–1.0）、`review_after`（YYYY-MM-DD）。
 
 高价值页：一句结论 + 来源 + ≥2 个 Related；ingest 页补 claim / evidence / boundary（见 `templates/topic-ingest-template.md`）。
+
+可执行契约见下一节。没写进机器规则的「建议」（含 `confidence`）不会让脚本失败。
+
+## 机器规则子集（`scripts/lint_wiki.py`）
+
+本表是可失败的契约。矛盾、supersession、source mtime、向量检索不在本子集。故意写坏的页面不入库；`scripts/test_lint_wiki.py` 用临时文件断言路径和退出码。
+
+依赖：Python 3.11+、PyYAML。测试另需 pytest。
+
+```bash
+python3 scripts/lint_wiki.py
+python3 scripts/lint_wiki.py --strict
+python3 -m pytest scripts/test_lint_wiki.py -q
+```
+
+`python` 在指向 Python 3 时与 `python3` 相同。本仓库其它脚本示例使用 `python3`。
+
+### 扫描范围
+
+| 范围 | 行为 |
+|------|------|
+| `wiki/**/*.md` | 检查行内相对链接与图片。跳过 fenced code、行内代码、带 scheme 的 URL、`//`、纯锚点，以及路径里含 `<` `>` `*` 的占位符 |
+| 知识页 | 检查 frontmatter。不含 `wiki/changelog.md`、`wiki/WIKI_SCHEMA.md`、任意 `README.md`、`wiki/templates/template-design-rationale.md`、`wiki/references/**` |
+| `wiki/templates/**` | 仍检查 frontmatter；不把骨架链接当断链。模板按复制后的目录写相对路径（项目笔记在 `wiki/projects/<name>/`），`example-*.md` 故意不存在 |
+| orphan 候选 | 除 `wiki/index.md` 与 `wiki/templates/**` 外，没有其它 wiki 页用 Markdown 链入 |
+
+只解析文件开头的 frontmatter。正文里后来的 `---` 块不是元数据。未列出的键（`title`、`confidence`、`project` 等）不导致失败。
+
+### 级别
+
+| 检查 | 级别 |
+|------|------|
+| 缺少 frontmatter，YAML 无法解析，或不是 mapping | error |
+| 缺少 `type` / `status` / `created` / `updated` / `tags` / `sources` | error |
+| `type` 不在 `topic` \| `map` \| `paper` \| `entity` \| `project-note` | error |
+| `status` 不在 `seed` \| `growing` \| `stable` \| `stale` | error |
+| `created` / `updated` / 非空的 `review_after` 不是合法 `YYYY-MM-DD` | error |
+| `tags` / `sources` 不是列表，或某个 tag 不是非空字符串 | error |
+| `sources` 中的相对路径不存在（URL 跳过；没有 `/` 且不以 `.md` 结尾的标签跳过） | error |
+| Markdown 或图片的相对链接目标不是已存在文件 | error |
+| `growing` 或 `stale` 缺少 `review_after` | warning |
+| orphan 候选 | warning |
+
+`tags` 与 `sources` 可以是空列表。`seed` / `stable` 可以不写 `review_after`。
+
+### 退出码
+
+| 码 | 含义 |
+|----|------|
+| 0 | 没有 error。允许 warning |
+| 1 | 有 error；或加上 `--strict` 时有 warning |
+| 2 | 用法错误、找不到 `wiki/`、或未安装 PyYAML |
+
+默认不把 warning 当失败，本脚本因此不是 CI 阻断门。`/lint` 必须先跑脚本，再看导航和模板结构。`confidence` 与语义矛盾仍由人判断。
 
 ## Raw 与 URL
 

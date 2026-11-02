@@ -11,3 +11,8 @@ tmp/
 # 环境变量与私密
 .env
 .env.*
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
