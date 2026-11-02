@@ -38,6 +38,17 @@ description: Light maintenance for this wiki—navigation, links, frontmatter, a
 
 4. 图片断链已包含在脚本的相对链接检查里。要单独验收某个文件时，仍可跑 `scripts/wiki_verify_images.sh`。
 
+5. 收尾时在 `wiki/log.md` **顶部**追加一条，不要为此再跑一轮 lint，也不要写进 `wiki/changelog.md`：
+
+   ```text
+   ## [YYYY-MM-DD] lint | 本次范围的一行说明
+
+   - errors: N
+   - warnings: N
+   ```
+
+   `wiki/log.md` 与 `wiki/changelog.md` 一样不是知识页：没有 frontmatter 也不算 error。结构性变更仍只在需要时写 changelog。
+
 `lint` 是机械体检。语义整理、inbox 复盘、矛盾是否成立，用 **`/review`**。
 
 本技能不改 ingest 默认深度，不引入检索栈，也不把 Obsidian 当成写入真相源。

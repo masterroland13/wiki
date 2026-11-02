@@ -19,6 +19,7 @@
 |------|------|
 | `wiki/index.md` | 总入口与索引表 |
 | `wiki/changelog.md` | 结构性变更时追加（非每笔必写） |
+| `wiki/log.md` | 操作日志：ingest / query / lint。与 changelog 分开。默认 L1 不写 ingest 条目 |
 | `wiki/inbox.md` | **可选**：尚未归档的待办清单 |
 | `wiki/maps/` | 主题地图、学习路线、总览 |
 | `wiki/roadmaps/` | 细分路线（如某学科子路线） |
@@ -65,17 +66,18 @@
 
 1. 新材料：可进 `references/raw/`；复用结论写在 `wiki/`，并链回 Raw
 2. 导航：从 `index.md` 或 map 链到值得反复打开的页
-3. 大改动：在 `changelog.md` 顶部记一条
-4. 体检：按需 `/lint`（先跑 `python3 scripts/lint_wiki.py`，再看脚本不管的导航与模板结构）；语义整理用 `/review`
+3. 结构性变更：在 `changelog.md` 顶部记一条。小补丁和默认 L1 归档不必写
+4. 操作流水：写在 `log.md`（见下节）。不要把 changelog 当成 ops log
+5. 体检：按需 `/lint`（先跑 `python3 scripts/lint_wiki.py`，再看脚本不管的导航与模板结构）；语义整理用 `/review`
 
 ## 与 `/wiki` · `/query` · `/lint` · `/review` · `/teacher` 的配合
 
 | 技能 | 何时 |
 |------|------|
-| **/wiki** | 新 URL、截图、聊天、JD → Raw + topic + 导航。与已有页冲突时禁止静默覆盖，须写矛盾块或 supersession 字段 |
-| **/query** | 用已有 wiki 页回答：index → map/topic，引用仓库路径；找不到就明说。页与页冲突时并列引用，不选边 |
+| **/wiki** | 新 URL、截图、聊天、JD → Raw + topic + 导航。**默认 L1**。用户说出「L2 / 深挖 / compile / 级联」才走 L2 compile（相关 entity、相关 map、index + 一条 ingest log）。与已有页冲突时禁止静默覆盖，须写矛盾块或 supersession 字段 |
+| **/query** | 用已有 wiki 页回答：index → map/topic，引用仓库路径；找不到就明说。页与页冲突时并列引用，不选边。结束时在 `log.md` 追加一条 `query`（不是知识回写） |
 | **/review** | inbox、到期页、`growing`/`stale` → 提炼、互链。冲突时禁止静默覆盖，须写矛盾块或 supersession 字段 |
-| **/lint** | 先跑 `scripts/lint_wiki.py`，再查导航与模板结构。脚本会警告 `superseded_by` 页仍被 `wiki/index.md` 主推。哪一边为真不在此技能 |
+| **/lint** | 先跑 `scripts/lint_wiki.py`，再查导航与模板结构。脚本会警告 `superseded_by` 页仍被 `wiki/index.md` 主推。哪一边为真不在此技能。结束时在 `log.md` 追加一条 `lint`（记下 error / warning 数），不要为此再跑一轮 lint |
 | **/teacher** | 还不会、要推导、系统学习（通用 + CS，见 `domain-cs.md`） |
 | **/teacher-cs** | 同上，CS 触发别名（算法、LeetCode、面试） |
 
@@ -95,6 +97,37 @@ python3 scripts/check_retrieval_cases.py
 ```
 
 这个脚本不回答问题，也不调用 embedding。抽检目标是 ≥70% 打开期望页，或明确说找不到。
+
+## 操作日志与 changelog
+
+两份都按时间追加，职责不同。
+
+| 文件 | 记什么 | 不记什么 |
+|------|--------|----------|
+| [`log.md`](./log.md) | ingest / query / lint 的一次操作 | 目录约定、schema 契约、技能体系 |
+| [`changelog.md`](./changelog.md) | 结构性变更 | 每一次查询、每一次 lint、每一次 L1 小补丁 |
+
+`log.md` 最新条目在顶部。标题能被 grep，动词只能是 `ingest`、`query`、`lint` 之一：
+
+```text
+## [YYYY-MM-DD] ingest | 标题
+## [YYYY-MM-DD] query | 标题
+## [YYYY-MM-DD] lint | 标题
+```
+
+这就是 `## [YYYY-MM-DD] ingest|query|lint | title`：方括号里的日期、一个动词、空格、竖线、空格、一行标题。不要把字面量 `ingest|query|lint` 写进标题。
+
+| 动词 | 何时写 |
+|------|--------|
+| `ingest` | **L2 compile 必写**。L0 / L1 默认不写 |
+| `query` | 每次 `/query` 结束写一条，包括回答是「找不到」 |
+| `lint` | 每次 `/lint` 结束写一条，记下 error 与 warning 的数量 |
+
+归档深度默认仍是 **L1**（小步：一篇 topic，需要时在 index 或一个 map 上加一条入口）。用户没有说出「L2」「深挖」「compile」「级联」时，不要升级，不要级联 entity。来源看起来重要，也不自动升级。
+
+L2 compile 只在 L1 那一页之外多做四件事：更新**相关** entity（短定义或一条链接）、**相关** map（一行链接；没有合适的 map 且会反复打开才新建）、`index.md` 对应分区的一行，以及 `log.md` 顶部的一条 `ingest`。不改无关阅读笔记的正文和文风，不按「每源 10–15 页」凑数，不自动裁定矛盾，也不因为这次归档去写 changelog。changelog 只在同一次改动了目录约定或 schema 时才写。
+
+`log.md` 不是知识页。和 `changelog.md` 一样**不要求 frontmatter**。机器 lint 仍检查里面的相对链接。还没建出来的预期路径用反引号，不要写成 Markdown 链接。细则与 opt-in 用语见 `.agents/skills/wiki/SKILL.md`。演练条目在 [`log.md`](./log.md)（`L2 dry-run — synthetic example-widget`）：只列出预期触达，没有创建那些页。
 
 ## YAML frontmatter（按需）
 
@@ -145,7 +178,7 @@ python3 -m pytest scripts/test_lint_wiki.py -q
 | 范围 | 行为 |
 |------|------|
 | `wiki/**/*.md` | 检查行内相对链接与图片。跳过 fenced code、行内代码、带 scheme 的 URL、`//`、纯锚点，以及路径里含 `<` `>` `*` 的占位符 |
-| 知识页 | 检查 frontmatter。不含 `wiki/changelog.md`、`wiki/WIKI_SCHEMA.md`、任意 `README.md`、`wiki/templates/template-design-rationale.md`、`wiki/references/**`、`wiki/evals/**` |
+| 知识页 | 检查 frontmatter。不含 `wiki/changelog.md`、`wiki/log.md`、`wiki/WIKI_SCHEMA.md`、任意 `README.md`、`wiki/templates/template-design-rationale.md`、`wiki/references/**`、`wiki/evals/**`。`wiki/log.md` 与 changelog 一样豁免：操作日志的标题前缀不是知识页字段，缺 frontmatter 不是 error。相对链接照查 |
 | `wiki/templates/**` | 仍检查 frontmatter；不把骨架链接当断链。模板按复制后的目录写相对路径（项目笔记在 `wiki/projects/<name>/`），`example-*.md` 故意不存在 |
 | `wiki/evals/**` | 金标，不是知识页：不查 frontmatter，也不当 orphan。仍检查相对链接 |
 | orphan 候选 | 除 `wiki/index.md`、`wiki/templates/**` 与 `wiki/evals/**` 外，没有其它 wiki 页用 Markdown 链入 |

@@ -28,7 +28,8 @@
 
 1. 改「先读谁、P0/P1」：只改 **`AGENTS.md` 本节**，并同步 **`CLAUDE.md`**。
 2. 流程与分层：只定义在 **`wiki/WIKI_SCHEMA.md`**。
-3. 结构性变更：在 **`wiki/changelog.md`** 记一笔。
+3. 结构性变更：在 **`wiki/changelog.md`** 记一笔。每一次小补丁、每一次 L1 归档不必写。
+4. 操作流水：ingest / query / lint 写在 **`wiki/log.md`**（前缀 `## [YYYY-MM-DD] ingest|query|lint | title`）。**默认 L1 不写 ingest 条目**。只有用户明示「L2 / 深挖 / compile / 级联」才做 L2 compile（相关 entity、相关 map、index，并写一条 `ingest`）。不要把 changelog 改成操作日志。
 
 ## LLM 维护的知识库（无 Obsidian）
 
@@ -52,7 +53,7 @@
 
 | 技能 | 用途 | Canonical 路径 |
 |------|------|----------------|
-| **/wiki** | 投喂 URL、截图、聊天 → Raw + Wiki | `.agents/skills/wiki/SKILL.md` |
+| **/wiki** | 投喂 URL、截图、聊天 → Raw + Wiki。**默认 L1**；L2 compile 须明示 | `.agents/skills/wiki/SKILL.md` |
 | **/query** | 按已有 wiki 页回答，引用仓库路径；找不到就明说 | `.agents/skills/query/SKILL.md` |
 | **/lint** | 坏链、导航、frontmatter 机械体检（先跑 `scripts/lint_wiki.py`） | `.agents/skills/lint/SKILL.md` |
 | **/review** | inbox 分拣、到期页复盘、灵感连接 | `.agents/skills/review/SKILL.md` |

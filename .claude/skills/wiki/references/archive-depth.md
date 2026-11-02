@@ -1,14 +1,16 @@
 # 归档深度：L0 / L1 / L2
 
-默认由 Agent 根据输入判断档位；用户可说「只要 Raw」「标准 wiki」「深挖」覆盖。
+**默认 L1**。用户可说「只要 Raw」走 L0，「标准 wiki」或什么都不说走 L1。只有说出「L2」「深挖」「compile」「级联」才走 L2 compile。不要因为来源看起来重要，或是 TrendRadar S 档，就自动升级。
 
 ## 档位对照
 
 | 档位 | 典型输入 | Raw | Wiki | 导航 | 外链互证 |
 |------|----------|-----|------|------|----------|
-| **L0 片段** | 单图/单段、无 URL、补一条事实 | 必做（图+结构化转写） | 短段落并入已有 topic，或 seed topic（TL;DR+来源） | 仅当新主题 | 不主动 |
-| **L1 标准** | URL、文章摘要、用户 `/wiki` 默认 | 长/杂/重要来源时必做 | `topic-ingest` 或对应模板 | index 或 map；结构性新增写 changelog | 1–2 源即可 |
-| **L2 深读** | 「深挖」、TrendRadar S 档、高价值技术文 | 全文或精读摘录 | 完整 ingest（Assessment、Boundary、Actionable） | index + map + changelog | 多源交叉验证 |
+| **L0 片段** | 单图/单段、无 URL、补一条事实 | 必做（图+结构化转写） | 短段落并入已有 topic，或 seed topic（TL;DR+来源） | 仅当新主题。不写 `wiki/log.md` | 不主动 |
+| **L1 标准** | URL、文章摘要、用户 `/wiki` 默认 | 长/杂/重要来源时必做 | `topic-ingest` 或对应模板 | index **或** map 一条入口。不写 `wiki/log.md`。新 topic 不写 changelog | 1–2 源即可 |
+| **L2 深读（compile）** | 用户明示「L2 / 深挖 / compile / 级联」 | 全文或精读摘录 | 完整 ingest（Assessment、Boundary、Actionable） | 相关 entity + 相关 map + index + `wiki/log.md` 一条 `ingest`。changelog 仅当同一次还有结构变更 | 多源交叉验证，不凑页数 |
+
+L2 的级联范围只有相关 entity、相关 map、`wiki/index.md` 和 `wiki/log.md`。不改无关 topic 正文，不按每源 10–15 页扩写。条目前缀与 opt-in 见 `wiki/WIKI_SCHEMA.md`「操作日志与 changelog」和 `/wiki` skill 的 L2 dry-run。
 
 ## 合并 vs 新建 topic
 
