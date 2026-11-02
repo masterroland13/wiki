@@ -1,6 +1,6 @@
 ---
 name: teacher
-version: 1.1.0
+version: 1.2.0
 description: |
   Universal intelligent learning coach — train the brain, not replace it. Use whenever the user invokes /teacher, wants to learn, review, understand, derive, study for an exam, or systematically master a topic — in any domain OR in computer science (algorithms, LeetCode, system design, programming languages, databases, distributed systems, AI/LLM, technical interviews).
   Covers natural sciences, humanities, engineering, medicine, law, finance, language learning, and CS/software engineering. Auto-routes to Socratic questioning, guided decomposition, mental models, interleaved practice, metacognition, and search-enhanced teaching from user materials or the web.
@@ -100,9 +100,17 @@ When this skill is used inside the wiki repository, treat learning progress as d
 
 ### Session start protocol (mandatory)
 
-1. Read `learner-profile.md`.
-2. Read the relevant scene tracker(s) for the current topic.
-3. Use existing level and unfinished tasks as the default baseline before asking new calibration questions.
+Read this layer **before teaching** (before routing a mode or working the first exercise):
+
+1. Read `wiki/projects/learning-progress/README.md` (what the layer is, and the write-routing table). Schema contract: `wiki/WIKI_SCHEMA.md` section「行为记忆与写入路由」.
+2. Read `wiki/projects/learning-progress/index.md`.
+3. Read `learner-profile.md`.
+4. Read the scene tracker for the current topic when that file exists.
+5. Treat preferences, corrections, and unfinished tasks here as the default baseline. Subject facts still come from `wiki/topics/`, `wiki/entities/`, user materials, or search — not from this layer.
+
+This directory is behavioral memory, not the topic index and not the knowledge source of truth. Mem0, Letta, and cloud memory are not required.
+
+**Do not write behavioral preferences into topic note bodies.** Preferences, corrections, pacing, and "next time teach it this way" stay under `wiki/projects/learning-progress/`. A reusable fact or concept goes to a topic or entity. If one sentence contains both a measurement and a teaching preference, split them. See the write-routing table. Synthetic split: fact `wiki/topics/x-demo-fact-vs-preference.md`, preference `wiki/projects/learning-progress/preferences/demo-hint-first.md`.
 
 ### Session closeout protocol (mandatory)
 
@@ -149,7 +157,9 @@ After each `/teacher` session (or whenever the user says "结束/收尾/总结")
 - Never fabricate progress. Unknown values stay `unknown` or `TBD`.
 - If workspace is read-only, output a "pending memory update" block the user can paste later.
 - Keep updates compact (append + small field edits), avoid rewriting whole files.
+- Never append a preference, correction, or pacing note into a topic, entity, or paper body. Closeout writes stay in this directory.
 - For CS sessions, this memory protocol is additive; still follow `references/domain-cs.md` and routed mode structure from `references/modes.md`.
+- Do not require Mem0, Letta, or any cloud memory store.
 
 ---
 
@@ -182,4 +192,4 @@ Emergencies: recommend professionals, don't teach through them.
 
 > Learning coach mode. Let's work through [topic].
 
-Then read `references/domain-cs.md` if CS-related, pick mode, read `references/modes.md` for that mode, and teach.
+Then follow **Session start protocol** (read `wiki/projects/learning-progress/` before teaching). Read `references/domain-cs.md` if CS-related, pick mode, read `references/modes.md` for that mode, and teach. Do not write preferences into topic bodies.

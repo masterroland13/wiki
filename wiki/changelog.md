@@ -4,6 +4,10 @@ Newest entries at the top.
 
 ## 2026-11-02
 
+- **Slice F**：`wiki/projects/learning-progress/` 定为行为记忆层（偏好、纠错、教学进度）。事实仍在 topics / entities。写入路由在 [`WIKI_SCHEMA.md`](WIKI_SCHEMA.md)「行为记忆与写入路由」，并链到 [`projects/learning-progress/README.md`](projects/learning-progress/README.md)。`/teacher` 与 `/review` 启动时先读该层。禁止把偏好写进 topic 正文。不要求 Mem0 / Letta / 云记忆。索引只在「项目」轻链 hub，偏好页不进主题分区。
+- 合成示例：事实 [`topics/x-demo-fact-vs-preference.md`](topics/x-demo-fact-vs-preference.md)（北窗焦点块 3.2 与 2.1 项/小时）；偏好 [`projects/learning-progress/preferences/demo-hint-first.md`](projects/learning-progress/preferences/demo-hint-first.md)（先提示、限时、先用中文纠正）。未改《妥协社会》阅读笔记正文。未改 L1 默认、`log.md` 协议与 source-clock。未做 Slice G–J。
+- lint：该目录存在但缺少 README 或标题 `## 写入路由` 时 warning，不因此失败。
+
 - **Slice E**：source-clock stale。知识页 `sources` 指向仓库内、`wiki/` 外的已存在文件时，`scripts/lint_wiki.py` 把该文件 mtime 的本地日历日期与页 `updated` 比较。源日期更晚则 warning，建议考虑 `status: stale`，不写回页面。纯 URL 与非路径标签跳过；`wiki/` 内互链不参与比较。未改 L1 默认，也未改 `log.md` 协议。未做 Slice F–J。未改《妥协社会》笔记正文。
 
 - **Slice D**：新增 [`log.md`](log.md) 作为操作日志（ingest / query / lint）。条目前缀 `## [YYYY-MM-DD] ingest|query|lint | title`。`changelog.md` 仍只记结构性变更。默认归档深度仍是 **L1**；L2 compile 须用户说出「L2 / 深挖 / compile / 级联」，且只级联相关 entity、相关 map、index，并写一条 `ingest`。`log.md` 与 changelog 一样不要求知识页 frontmatter。未改阅读笔记正文。未做 Slice E–J。

@@ -28,6 +28,7 @@ description: Light maintenance for this wiki—navigation, links, frontmatter, a
    - warning（orphan 候选、`growing` / `stale` 缺 `review_after`、`superseded_by` 仍被 `wiki/index.md` 直接链接）能小修就修
    - 最后一种：从 `wiki/index.md` 拿掉该链接，保留页面，让后继页链入。不要删页，不要清空字段来消掉 warning，也不要改写主张。哪一边为真不在本技能。规则见 `wiki/WIKI_SCHEMA.md`「矛盾与取代」和「机器规则子集」
    - source-clock warning 不要自动修。`wiki/` 外的 source 文件，其 mtime 的本地日历日期晚于页 `updated` 时，消息是 `source '<path>' is newer than updated (YYYY-MM-DD > YYYY-MM-DD); consider status: stale`。它只建议人考虑 `status: stale`。不要为了消掉它去改 `status`、`updated` 或正文。URL、非路径标签和 `wiki/` 内互链不会触发。规则见 `wiki/WIKI_SCHEMA.md`「Source-clock」
+   - `learning-progress` 缺 `README.md` 或标题 `## 写入路由` 只是 warning（`learning-progress README.md is missing (write-routing table)` 或 `learning-progress README.md is missing the write-routing table`）。目录不存在则不查。不要为此把路由表写进 topic，也不要把全库判失败。规则见 `wiki/WIKI_SCHEMA.md`「行为记忆路由表（存在性）」
    - 不要为了清掉 warning 去改写既有阅读笔记正文；历史页可以暂时留着 warning
 
 3. 脚本不管、仍要人看的项：

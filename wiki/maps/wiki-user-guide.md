@@ -94,7 +94,7 @@ review_after: 2026-08-01
 | `wiki/topics/` | 主题笔记：概念、方法、读书记录 |
 | `wiki/entities/` | 术语 / 作品 / 人物等短定义页 |
 | `wiki/papers/` | 单篇论文阅读笔记 |
-| `wiki/projects/` | 按项目归档的知识 hub |
+| `wiki/projects/` | 按项目归档的知识 hub。`learning-progress/` 是行为记忆（偏好 / 纠错 / 进度），不是主题事实 |
 | `wiki/templates/` | 新页骨架 |
 | `wiki/references/` | Wiki 侧参考（如图片处理指南） |
 
@@ -109,6 +109,8 @@ wiki/topics/、wiki/entities/、wiki/papers/
 ```
 
 不要跳过 index 直接乱建叶子页——否则容易变成「孤岛页」。
+
+`/teacher` 与 `/review` 在讲课或复盘之前，再读 [`learning-progress`](../projects/learning-progress/README.md)。那是行为记忆，不是本索引的主题主入口。偏好不要写进 topic 正文。写入路由见 [`WIKI_SCHEMA.md`](../WIKI_SCHEMA.md)。
 
 ---
 
@@ -172,6 +174,7 @@ wiki/topics/、wiki/entities/、wiki/papers/
 | 稳定术语 / 人物 / 作品定义 | `wiki/entities/` |
 | 单篇论文笔记 | `wiki/papers/` |
 | 某项目专属决策与经验 | `wiki/projects/<project>/` |
+| 学习者偏好、纠错、教学进度 | `wiki/projects/learning-progress/`（不要写进 topic 正文） |
 
 ---
 

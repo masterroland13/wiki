@@ -81,8 +81,11 @@ L2 仍然不做：不写 changelog（除非同一次还改了 schema 或目录�
 | `wiki/maps/` | 多 topic 导航 |
 | `wiki/entities/` | 术语/工具短定义 |
 | `wiki/projects/` | 项目上下文知识 |
+| `wiki/projects/learning-progress/` | 行为记忆：偏好、纠错、教学进度。不是事实页 |
 
 创建页优先 `wiki/templates/`（ingest / topic / faq / entity / paper / project-note / map）。
+
+**禁止把行为偏好写进 topic 正文。** 节奏、语言、要提示还是要结论、纠错口吻、「下次怎么教」只写 `wiki/projects/learning-progress/`。可复用事实、概念、读书结论写 `wiki/topics/` 或 `wiki/entities/`。路由表在该目录 `README.md`，契约在 `wiki/WIKI_SCHEMA.md`「行为记忆与写入路由」。不要求 Mem0、Letta 或云端记忆。不要把偏好塞进既有阅读笔记。
 
 ### 5. 导航与两份日志
 

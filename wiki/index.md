@@ -73,7 +73,7 @@ review_after: 2026-07-15
 
 | 项目 | 说明 |
 |------|------|
-| [Learning progress](./projects/learning-progress/index.md) | `/teacher` 会话记忆 hub |
+| [Learning progress](./projects/learning-progress/index.md) | 行为记忆 hub（偏好 / 纠错 / 进度）。不是主题索引，也不是事实的单一真相源 |
 
 ## 协议示例
 
@@ -82,6 +82,7 @@ review_after: 2026-07-15
 | 笔记 | 说明 |
 |------|------|
 | [矛盾并存（合成）](./topics/x-demo-contradiction-coexistence.md) | 当天重读与间隔复习两条虚构主张同页保留；不裁定谁对 |
+| [事实与偏好分家（合成）](./topics/x-demo-fact-vs-preference.md) | 测量留在 topic。偏好在 learning-progress，不链进本表 |
 
 ## 维护技能
 

@@ -10,6 +10,6 @@ Legacy/compatibility trigger for computer-science coaching. **Do not duplicate C
 1. Read `.agents/skills/teacher/SKILL.md` and follow full workflow
 2. **Required before teaching:** read `.agents/skills/teacher/references/domain-cs.md`
 3. Default modes: A (guided decomposition) or B (Socratic) for algorithms/interviews
-4. Session memory paths: same as teacher (`wiki/projects/learning-progress/`)
+4. Before teaching, follow the teacher skill's session start: read `wiki/projects/learning-progress/` (README write-routing table, hub, learner profile). Preferences, corrections, and pacing stay in that directory. Do not write them into topic note bodies. Mem0, Letta, and cloud memory are not required.
 
 Canonical CS adapter: `teacher/references/domain-cs.md`

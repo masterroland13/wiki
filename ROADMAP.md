@@ -9,6 +9,7 @@
 
 ## 已完成
 
+- 2026-11-02：Slice F 行为记忆层（`wiki/projects/learning-progress/`：偏好 / 纠错 / 教学进度；写入路由在 schema 与该目录 README；`/teacher` 与 `/review` 启动先读）。事实与偏好的合成示例分开。不要求 Mem0。未做 Slice G–J。
 - 2026-11-02：Slice E source-clock stale（`wiki/` 外 source 的 mtime 日期晚于 `updated` 时 warning，建议 `status: stale`，不写回）。未做 Slice F–J。
 - 2026-11-02：Slice D 操作日志 [`wiki/log.md`](wiki/log.md) + 可选 L2 compile（默认仍 L1；级联限于相关 entity / map / index / log）。
 - 2026-11-02：Slice C 矛盾与取代（可选 `supersedes` / `superseded_by`，模板两节，合成示例，index 主推 warning）。不自动裁定对错。

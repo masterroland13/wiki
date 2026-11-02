@@ -5,7 +5,7 @@
 > 审查手册：[`wiki-slice-audit.md`](../handbooks/wiki-slice-audit.md)  
 > 冲突序：`AGENTS.md` / `wiki/WIKI_SCHEMA.md` > `ROADMAP.md` > 本计划 > 其它 docs  
 > 北极星：git + markdown + agent；Obsidian 最多只读  
-> 状态：2026-11-02 已确认。Slice A、Slice B、Slice C、Slice D 与 Slice E 已实现。未做 Slice F–J。  
+> 状态：2026-11-02 已确认。Slice A、Slice B、Slice C、Slice D、Slice E 与 Slice F 已实现。未做 Slice G–J。  
 > 日期：2026-11-02（Asia/Shanghai）
 
 ---
@@ -194,6 +194,9 @@
 - **易返工点**：时区/git checkout 时间；WSL 与 Windows mtime
 
 ### Slice F — 行为记忆层制度化（可插）
+
+> 状态：2026-11-02 已实现。`wiki/projects/learning-progress/` 是行为记忆层（偏好 / 纠错 / 教学进度）。写入路由在 `wiki/WIKI_SCHEMA.md`「行为记忆与写入路由」，并链到该目录 `README.md`。`/teacher` 与 `/review` 启动先读该层。禁止把偏好写入 topic 正文。合成示例：事实 `wiki/topics/x-demo-fact-vs-preference.md`，偏好 `wiki/projects/learning-progress/preferences/demo-hint-first.md`。索引只轻链 hub。lint 在该目录存在但缺少 README 或 `## 写入路由` 时 warning，不因此失败。不要求 Mem0 / Letta / 云记忆。不要在本切片上重做。未做 Slice G–J。未改 L1 默认、`log.md` 协议与 source-clock。未改《妥协社会》笔记正文。
+
 - **工期**：0.5–1 天  
 - **依赖闸门**：无（建议 A 后，与 B 可交错）
 - **做什么**：Schema/AGENTS 明确：`wiki/projects/learning-progress/`（或约定路径）= 偏好/纠错/教学进度；禁止写入 topic 正文；`/teacher` `/review` 启动读该层；给一例「事实在 topic、偏好在 memory」
@@ -274,7 +277,7 @@
 | 4 | Raw 纪律 | 不强制；高价值鼓励 |
 | 5 | 评测金标 | agent 起草，你审 |
 | 6 | 公共仓隐私 | 检索索引只本地；raw 慎放秘密 |
-| 7 | learning-progress | F 升为正式 memory 层 |
+| 7 | learning-progress | 已按 Slice F 升为正式 memory 层（git Markdown；不要求 Mem0） |
 
 ---
 
@@ -285,4 +288,4 @@
 - [x] 同意默认假设（未另行修订）
 - [x] 2026-11-02 确认：落盘 docs，并实现 Slice A
 
-后续切片仍遵守：不改 ingest 默认深度；不上 GraphRAG / Obsidian 写入真相源；不重写既有阅读笔记正文。未确认的切片不开工。Slice B、Slice C、Slice D 与 Slice E 已单独落地；Slice F–J 仍未开工。
+后续切片仍遵守：不改 ingest 默认深度；不上 GraphRAG / Obsidian 写入真相源；不重写既有阅读笔记正文。未确认的切片不开工。Slice B、Slice C、Slice D、Slice E 与 Slice F 已单独落地；Slice G–J 仍未开工。
