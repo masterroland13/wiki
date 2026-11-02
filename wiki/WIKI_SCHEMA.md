@@ -72,10 +72,10 @@
 
 | 技能 | 何时 |
 |------|------|
-| **/wiki** | 新 URL、截图、聊天、JD → Raw + topic + 导航 |
-| **/query** | 用已有 wiki 页回答：index → map/topic，引用仓库路径；找不到就明说 |
-| **/review** | inbox、到期页、`growing`/`stale` → 提炼、互链 |
-| **/lint** | 先跑 `scripts/lint_wiki.py`，再查导航与模板结构；语义矛盾不在此技能 |
+| **/wiki** | 新 URL、截图、聊天、JD → Raw + topic + 导航。与已有页冲突时禁止静默覆盖，须写矛盾块或 supersession 字段 |
+| **/query** | 用已有 wiki 页回答：index → map/topic，引用仓库路径；找不到就明说。页与页冲突时并列引用，不选边 |
+| **/review** | inbox、到期页、`growing`/`stale` → 提炼、互链。冲突时禁止静默覆盖，须写矛盾块或 supersession 字段 |
+| **/lint** | 先跑 `scripts/lint_wiki.py`，再查导航与模板结构。脚本会警告 `superseded_by` 页仍被 `wiki/index.md` 主推。哪一边为真不在此技能 |
 | **/teacher** | 还不会、要推导、系统学习（通用 + CS，见 `domain-cs.md`） |
 | **/teacher-cs** | 同上，CS 触发别名（算法、LeetCode、面试） |
 
@@ -105,13 +105,30 @@ python3 scripts/check_retrieval_cases.py
 
 `growing` / `stale` 建议补 `confidence`（0.0–1.0）、`review_after`（YYYY-MM-DD）。
 
-高价值页：一句结论 + 来源 + ≥2 个 Related；ingest 页补 claim / evidence / boundary（见 `templates/topic-ingest-template.md`）。
+高价值页：一句结论 + 来源 + ≥2 个 Related；ingest 页补 claim / evidence / boundary（见 `templates/topic-ingest-template.md`）。冲突或更换阅读入口时，再补下面的可选块，不必给旧页补字段。
 
-可执行契约见下一节。没写进机器规则的「建议」（含 `confidence`）不会让脚本失败。
+可执行契约见「机器规则子集」。没写进机器规则的「建议」（含 `confidence`，以及空着的 `supersedes` / `superseded_by`）不会让脚本失败。
+
+## 矛盾与取代（可选）
+
+只在高价值页使用。普通页和旧页不用回填。这里不判断哪一边为真，也不建图数据库。
+
+两条主张对不上时，**禁止静默覆盖**：不要删改已有句子来显得一致，也不要只留下认为对的一边。把双方写进 `## Contradictions`（对方路径、两边主张、各自来源）。需要换「先读哪一页」时，旧页留在仓库里，用 `## Superseded` 和下面的字段留痕。取代只表示阅读入口变了，不表示旧主张为假。
+
+| 字段 | 何时写 | 形状 |
+|------|--------|------|
+| `supersedes` | 本页取代了哪些页的阅读位置 | 省略、空、一个相对路径，或路径列表 |
+| `superseded_by` | 哪些页取代了本页的阅读位置 | 同上 |
+
+路径相对**当前页**，与 Markdown 链接相同（例如 `./other-topic.md`）。两个字段都可以不写。不要为此新增 `status` 枚举。
+
+模板里的 `## Contradictions` 与 `## Superseded` 可以留空。合成示例（两边主张都在，旧归档建议被标成取代但没有删掉）：[`topics/x-demo-contradiction-coexistence.md`](./topics/x-demo-contradiction-coexistence.md)，被取代的一页是 [`topics/x-demo-superseded-filing.md`](./topics/x-demo-superseded-filing.md)。
+
+`/wiki` 与 `/review` 发现冲突时必须走这一节，不能直接改掉旧主张。`/query` 并列引用冲突页，不选边。`/lint` 只做下一节的机械警告。
 
 ## 机器规则子集（`scripts/lint_wiki.py`）
 
-本表是可失败的契约。矛盾、supersession、source mtime、向量检索不在本子集。故意写坏的页面不入库；`scripts/test_lint_wiki.py` 用临时文件断言路径和退出码。
+本表是可失败的契约。哪一边主张为真、source mtime、向量检索不在本子集。`superseded_by` 仍被 index 主推是 warning，规则写在下面。故意写坏的页面不入库；`scripts/test_lint_wiki.py` 用临时文件断言路径和退出码。
 
 依赖：Python 3.11+、PyYAML。测试另需 pytest。
 
@@ -133,7 +150,7 @@ python3 -m pytest scripts/test_lint_wiki.py -q
 | `wiki/evals/**` | 金标，不是知识页：不查 frontmatter，也不当 orphan。仍检查相对链接 |
 | orphan 候选 | 除 `wiki/index.md`、`wiki/templates/**` 与 `wiki/evals/**` 外，没有其它 wiki 页用 Markdown 链入 |
 
-只解析文件开头的 frontmatter。正文里后来的 `---` 块不是元数据。未列出的键（`title`、`confidence`、`project` 等）不导致失败。
+只解析文件开头的 frontmatter。正文里后来的 `---` 块不是元数据。未列出的键（`title`、`confidence`、`project`，以及省略或为空的 `supersedes` / `superseded_by`）不导致失败。
 
 ### 级别
 
@@ -149,8 +166,19 @@ python3 -m pytest scripts/test_lint_wiki.py -q
 | Markdown 或图片的相对链接目标不是已存在文件 | error |
 | `growing` 或 `stale` 缺少 `review_after` | warning |
 | orphan 候选 | warning |
+| `superseded_by` 已设置，且 `wiki/index.md` 仍有直接 Markdown 链接指向该页 | warning。消息：`superseded_by is set but wiki/index.md still links to this page` |
+| `supersedes` 或 `superseded_by` 不是字符串，也不是字符串列表 | warning。消息：`{字段} must be a path or a list of paths` |
+| 上述字段里像路径的条目不存在 | warning。消息：`{字段} path not found: {条目}`。不像路径的标签跳过 |
 
-`tags` 与 `sources` 可以是空列表。`seed` / `stable` 可以不写 `review_after`。
+`tags` 与 `sources` 可以是空列表。`seed` / `stable` 可以不写 `review_after`。`supersedes` 与 `superseded_by` 可以省略、为空字符串或空列表。
+
+**Index 主推（本脚本的精确定义）**：只看 `wiki/index.md` 正文里的 Markdown 链接。忽略 fenced code、行内 code、带 scheme 的 URL、`//` 和纯锚点，规则与其它相对链接相同。链接解析到带非空 `superseded_by` 的文件，就记一条 warning，路径打在该页上。
+
+- 「已设置」指字段是非空字符串，或列表里至少有一条非空字符串。空值不算。
+- 形状不合法时只报形状 warning，不算已设置，因此不会同时报主推 warning。
+- 只从 map、使用手册、`wiki/projects/**/index.md` 或其它 topic 链入，不算主推。不沿链接再走一层。
+- 只写了 `supersedes`、没有 `superseded_by` 的页，可以继续留在 index 里。
+- 处理这条 warning 时：从 `wiki/index.md` 拿掉该链接，保留页面，让后继页链过来。不要删页，也不要为了消 warning 改写主张。
 
 ### 退出码
 
@@ -160,7 +188,7 @@ python3 -m pytest scripts/test_lint_wiki.py -q
 | 1 | 有 error；或加上 `--strict` 时有 warning |
 | 2 | 用法错误、找不到 `wiki/`、或未安装 PyYAML |
 
-默认不把 warning 当失败，本脚本因此不是 CI 阻断门。`/lint` 必须先跑脚本，再看导航和模板结构。`confidence` 与语义矛盾仍由人判断。
+默认不把 warning 当失败，本脚本因此不是 CI 阻断门。`/lint` 必须先跑脚本，再看导航和模板结构。`confidence` 与哪一边主张为真仍由人判断。可选 supersession 字段的坏路径是 warning，不是 error，因此不会因为没填这些字段而让全库失败。
 
 ## Raw 与 URL
 

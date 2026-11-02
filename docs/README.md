@@ -10,7 +10,7 @@
 
 ## 当前范围
 
-已落地文档。**Slice A**（机器 lint）与 **Slice B**（`/query` + 检索金标）已实现。Slice C–J 未做。
+已落地文档。**Slice A**（机器 lint）、**Slice B**（`/query` + 检索金标）与 **Slice C**（矛盾与取代协议）已实现。Slice D–J 未做。
 
 ```bash
 python3 scripts/lint_wiki.py

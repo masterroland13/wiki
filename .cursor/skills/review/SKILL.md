@@ -44,7 +44,7 @@ Review 时对每个候选页问：
 
 1. **主张是什么？** — 一句话可引用结论；说不清 → 降级为 seed 或退回 inbox
 2. **证据在哪？** — `sources` / Raw 路径 / 可复现链接
-3. **边界在哪？** — 何时不成立、与哪条旧结论冲突
+3. **边界在哪？** — 何时不成立、与哪条旧结论冲突。冲突时**禁止静默覆盖**：写 `## Contradictions`，或用 `supersedes` / `superseded_by` 更换阅读入口。不裁定谁对。见 `wiki/WIKI_SCHEMA.md`「矛盾与取代」
 
 摘抄堆、无主张 → **不归档**，留在 inbox 或标 `status: seed` + 补 Open Questions。
 
@@ -76,7 +76,7 @@ Review 时对每个候选页问：
 **动作词典：**
 
 - **promote** — inbox → `topics/` / `entities/` / `maps/` 草稿
-- **merge** — 并入已有 topic，旧页留重定向或删冗余
+- **merge** — 并入已有 topic 的重复表述。主张冲突时禁止用 merge 删掉或改写一方；改走矛盾块或 supersession 字段。旧页留重定向，或在确认无冲突后再删冗余
 - **link** — 补 Related、map、index 入口；不新建页
 - **defer** — 仍有价值但未成熟 → 更新 `review_after`、`confidence`
 - **drop** — 无复用价值，从 inbox 移除（说明理由）
@@ -86,6 +86,8 @@ Review 时对每个候选页问：
 - `growing` / `stale` → 补或调 `confidence`、`review_after`
 - 结论收敛 → 考虑 `stable`
 - 始终更新 `updated`
+- 冲突或更换阅读入口时，高价值页才补 `supersedes` / `superseded_by`（相对路径）。两个字段都可以空着。不要新造 status 来表示取代
+- 带 `superseded_by` 的页从 `wiki/index.md` 主表移出，保留页面，由后继页链入。不要为了清掉 lint warning 而删页或改写主张
 
 ### 5. Inspiration pass（默认开启，可 `--no-spark` 跳过）
 

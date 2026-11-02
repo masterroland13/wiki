@@ -66,3 +66,5 @@
 | **Codex** | `$wiki` | `$query` | `$lint` | `$review` | `$teacher` | `$teacher-cs` |
 
 宿主副本：`.cursor/skills/`、`.claude/skills/`、`.codex/skills/` 与 `.agents/skills/` 保持同步。
+
+冲突与取代的可选字段（`supersedes` / `superseded_by`）、`## Contradictions` / `## Superseded`，以及**禁止静默覆盖**，写在 `wiki/WIKI_SCHEMA.md`「矛盾与取代」。`/wiki` 与 `/review` 必须照做。字段不是必填。

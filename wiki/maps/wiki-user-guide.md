@@ -249,6 +249,7 @@ python3 scripts/lint_wiki.py
 3. 是否满足模板 MVP：结论 + 来源 + Related
 4. 必要时补 `wiki/changelog.md`
 5. `growing` / `stale` 的 `confidence` 仍人工看；缺 `review_after` 由脚本报 warning
+6. 带 `superseded_by` 仍被 `wiki/index.md` 直接链接时，脚本报 warning。从 index 拿掉链接并保留该页。不要删页，也不要改写主张来消掉这条 warning
 
 ---
 
@@ -295,11 +296,20 @@ sources:
 - **Boundaries / Failure Cases** — 何时不成立
 - **Actionable Moves** — 可执行下一步
 
+### 矛盾与取代（可选，高价值页）
+
+规则在 [`WIKI_SCHEMA.md`](../WIKI_SCHEMA.md)「矛盾与取代」。普通页和旧页不用填。
+
+- 两条主张冲突：写 `## Contradictions`，两边都留着。不要删改已有句子来显得一致，也不要裁定谁对。
+- 只是更换先读哪一页：旧页写 `superseded_by`，新页写 `supersedes`（相对本页的路径）。旧页留在仓库里。这不表示旧主张为假。
+- 带 `superseded_by` 的页不要留在 [`index.md`](../index.md) 的主表里。`/lint` 对这种情况报 warning，不会因此让全库失败。从 map 或本手册链过去不算主推。
+- 合成示例：[`矛盾并存`](../topics/x-demo-contradiction-coexistence.md)。被取代的归档建议仍在 [`x-demo-superseded-filing.md`](../topics/x-demo-superseded-filing.md)，index 不链它。
+
 Review 时对每页过三问：
 
 1. **主张是什么？** — 说不清 → 降级为 seed 或退回 inbox
 2. **证据在哪？** — sources / Raw / 可复现链接
-3. **边界在哪？** — 与哪条旧结论冲突
+3. **边界在哪？** — 与哪条旧结论冲突。冲突时按「矛盾与取代」写明，禁止静默覆盖
 
 ---
 
@@ -553,6 +563,10 @@ Agent 会：Raw + 结构化转写 → 短 topic 或并入已有页。
 ### 我只有一个想法，还没想清楚
 
 手动写入 [`wiki/inbox.md`](../inbox.md)，周末说「`/review` 复盘 inbox」。
+
+### 新材料和旧笔记打架
+
+不要直接改掉旧主张。按上文「矛盾与取代」和 [`WIKI_SCHEMA.md`](../WIKI_SCHEMA.md) 写 `## Contradictions`，或用 `supersedes` / `superseded_by` 更换阅读入口。lint 不裁定谁对。
 
 ### 某页写了很久，不确定是否过时
 
