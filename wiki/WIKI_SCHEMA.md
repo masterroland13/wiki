@@ -261,7 +261,7 @@ python3 -m pytest scripts/test_lint_wiki.py -q
 
 - 「已设置」指字段是非空字符串，或列表里至少有一条非空字符串。空值不算。
 - 形状不合法时只报形状 warning，不算已设置，因此不会同时报主推 warning。
-- 只从 map、使用手册、`wiki/projects/**/index.md` 或其它 topic 链入，不算主推。不沿链接再走一层。
+- 只从 map、使用手册（[`wiki教学与使用手册`](./maps/wiki-teaching-usage-handbook.md)）、`wiki/projects/**/index.md` 或其它 topic 链入，不算主推。不沿链接再走一层。
 - 只写了 `supersedes`、没有 `superseded_by` 的页，可以继续留在 index 里。
 - 处理这条 warning 时：从 `wiki/index.md` 拿掉该链接，保留页面，让后继页链过来。不要删页，也不要为了消 warning 改写主张。
 

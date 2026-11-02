@@ -87,7 +87,8 @@ cases:
     kind: direct
     question: "这个知识库怎么上手、技能怎么触发？"
     expect:
-      - wiki/maps/wiki-user-guide.md
+      - wiki/maps/wiki-teaching-usage-handbook.md
+    note: "旧路径 wiki/maps/wiki-user-guide.md 只保留跳转，正文在新手册。"
   - id: q14
     kind: intentional-miss
     question: "动态规划的入门笔记在哪？"

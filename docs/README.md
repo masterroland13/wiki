@@ -1,6 +1,6 @@
 # docs
 
-仓库工程文档（调研、计划、审查）。知识导航仍以 [`wiki/index.md`](../wiki/index.md) 为准；目录契约以 [`wiki/WIKI_SCHEMA.md`](../wiki/WIKI_SCHEMA.md) 为准。
+仓库工程文档（调研、计划、审查）。知识导航仍以 [`wiki/index.md`](../wiki/index.md) 为准；目录契约以 [`wiki/WIKI_SCHEMA.md`](../wiki/WIKI_SCHEMA.md) 为准。人类上手说明见 [wiki教学与使用手册](../wiki/maps/wiki-teaching-usage-handbook.md)。
 
 | 文档 | 用途 |
 |------|------|

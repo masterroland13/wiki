@@ -21,6 +21,7 @@
 | P0 | **`AGENTS.md`** | 项目正文、技能、Wiki 分层、**本索引** | 任何维护任务启动时 |
 | P0 | **`wiki/WIKI_SCHEMA.md`** | 目录分工、Raw/URL/图片与维护约定 | 动 `wiki/` 或 `references/raw/` 时 |
 | P1 | **`wiki/index.md`** | 复利知识库主题索引 | 查找、复习、归档后更新导航时 |
+| P1 | **`wiki/maps/wiki-teaching-usage-handbook.md`** | 教学与使用手册（人类上手） | 第一次使用、对齐工作流时 |
 | P1 | **`wiki/maps/learning-spine.md`** | 跨学科学习主轴（阶段 → Wiki 链接） | 规划长期学习、补 topic 时 |
 | P2 | **`CLAUDE.md`** | `@AGENTS.md` + 索引镜像 | Claude Code 会话 |
 | P2 | **`ROADMAP.md`** | 仓库工程 Backlog（可选） | 评估工具、记 Icebox 时 |
