@@ -9,6 +9,9 @@ sources: []
 project: []
 confidence:
 review_after:
+# 可选，仅高价值页。相对本页的路径。不裁定对错，也不必回填旧页。
+supersedes: []
+superseded_by: []
 kind: map
 date:
 people: []
@@ -50,6 +53,23 @@ rating:
 - entity:
 - paper:
 - project implication:
+
+## Contradictions
+
+与其它页冲突、且还没有取代关系时写在这里。两边都保留，不删改对方正文，也不裁定谁对。普通页留空。
+
+- 对方页：
+- 对方主张：
+- 本页主张：
+- 各自来源：
+
+## Superseded
+
+只在更换「先读哪一页」时填写，并同步 frontmatter 的 `supersedes` / `superseded_by`（相对本页的路径，可空）。这不表示旧主张为假。旧页留着。
+
+- 本页取代：
+- 本页被谁取代：
+- 留下旧页的原因：
 
 ## Gaps / Next Archival Work
 

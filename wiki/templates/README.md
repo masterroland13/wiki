@@ -33,6 +33,10 @@
 - `date`
 - `people`
 - `rating`
+- `supersedes`（本页取代了哪些页的阅读位置；相对路径或列表）
+- `superseded_by`（哪些页取代了本页的阅读位置）
+
+`supersedes` / `superseded_by` 与正文里的 `## Contradictions`、`## Superseded` 都是可选的，只给高价值页用。缺了不会让 lint 失败。冲突时两边都留下，禁止静默覆盖；字段不表示哪一边为真。规则与合成示例见 [`WIKI_SCHEMA.md`](../WIKI_SCHEMA.md) 的「矛盾与取代」。
 
 ## 模板选择
 

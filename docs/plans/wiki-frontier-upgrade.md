@@ -5,7 +5,7 @@
 > 审查手册：[`wiki-slice-audit.md`](../handbooks/wiki-slice-audit.md)  
 > 冲突序：`AGENTS.md` / `wiki/WIKI_SCHEMA.md` > `ROADMAP.md` > 本计划 > 其它 docs  
 > 北极星：git + markdown + agent；Obsidian 最多只读  
-> 状态：2026-11-02 已确认。Slice A 与 Slice B 已实现。未做 Slice C–J。  
+> 状态：2026-11-02 已确认。Slice A、Slice B 与 Slice C 已实现。未做 Slice D–J。  
 > 日期：2026-11-02（Asia/Shanghai）
 
 ---
@@ -139,6 +139,9 @@
 - **易返工点**：评测过拟合 index 措辞；金标谁维护（默认：agent 起草、你审）
 
 ### Slice C — Contradiction / Supersession 协议
+
+> 状态：2026-11-02 已实现（模板 `## Contradictions` / `## Superseded`、可选 `supersedes` / `superseded_by`、合成示例、`wiki/index.md` 主推 warning）。不要在本切片上重做。
+
 - **工期**：1–1.5 天  
 - **依赖闸门**：A（frontmatter 字段可被 lint 认知）
 - **做什么**：
@@ -275,4 +278,4 @@
 - [x] 同意默认假设（未另行修订）
 - [x] 2026-11-02 确认：落盘 docs，并实现 Slice A
 
-后续切片仍遵守：不改 ingest 默认深度；不上 GraphRAG / Obsidian 写入真相源；不重写既有阅读笔记正文。未确认的切片不开工。Slice B 已单独落地；Slice C–J 仍未开工。
+后续切片仍遵守：不改 ingest 默认深度；不上 GraphRAG / Obsidian 写入真相源；不重写既有阅读笔记正文。未确认的切片不开工。Slice B 与 Slice C 已单独落地；Slice D–J 仍未开工。

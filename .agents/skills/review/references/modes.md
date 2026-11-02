@@ -42,7 +42,7 @@
 
 1. 读指定 `wiki/maps/` 或 `wiki/projects/.../index.md`
 2. 列出下游 topic / entity 链接
-3. 每页过 **主张 / 证据 / 边界**
+3. 每页过 **主张 / 证据 / 边界**。与另一页冲突时写 `## Contradictions` 或 supersession 字段，禁止静默覆盖（见 `wiki/WIKI_SCHEMA.md`「矛盾与取代」）
 4. 补 map 上的缺口表（「还缺哪条 topic」）
 5. Inspiration：该主题下 2–3 个未写透的问题
 

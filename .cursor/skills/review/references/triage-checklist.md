@@ -43,7 +43,8 @@
 | 边界 | 有 limitations / 何时不适用 / Open Questions |
 | 导航 | 至少一条入链（index / map / project） |
 | Related | ≥2 个相关内链（高价值页） |
-| frontmatter | `type` `status` `updated` `tags` `sources` 齐全 |
+| frontmatter | `type` `status` `updated` `tags` `sources` 齐全。`supersedes` / `superseded_by` 可选，仅高价值页 |
+| 冲突 | 与其它页主张打架时写 `## Contradictions` 或 supersession 字段。禁止静默覆盖。不裁定谁对 |
 
 ---
 
@@ -56,4 +57,4 @@
 | stable | 0.7–0.9 | +90 天或省略 |
 | stale | 下调 0.1–0.2 | +7 天（催着重读 Raw） |
 
-合并、大改主张后 → 必调 `updated`，视情况写 changelog。
+合并、大改主张后 → 必调 `updated`，视情况写 changelog。主张冲突时不要用合并删掉一边。

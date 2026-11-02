@@ -57,7 +57,7 @@ description: Answer from this wiki by reading wiki/index.md, then maps and topic
 - 未执行
 ```
 
-找不到时把「答案」换成失败协议那一句，并保留「读过」。多页才够回答时，列出用到的每一条路径。页面彼此冲突时并列引用，不要静默选边。
+找不到时把「答案」换成失败协议那一句，并保留「读过」。多页才够回答时，列出用到的每一条路径。页面彼此冲突时并列引用，不要静默选边。落盘时走 `wiki/WIKI_SCHEMA.md`「矛盾与取代」：写 `## Contradictions` 或 `supersedes` / `superseded_by`，不要改写对方页来消掉冲突。
 
 ## 回写
 
@@ -65,6 +65,7 @@ description: Answer from this wiki by reading wiki/index.md, then maps and topic
 
 - 先提议，用户同意后再写
 - 不自动全库改写
+- 与已有页冲突时禁止静默覆盖；按 schema 写矛盾块或 supersession 字段
 - 不借这次回答改写既有阅读笔记正文（例如《妥协社会》各篇）
 
 ## 不做

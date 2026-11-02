@@ -4,6 +4,9 @@ Newest entries at the top.
 
 ## 2026-11-02
 
+- **Slice C**：矛盾与取代协议。模板增加 `## Contradictions` 与 `## Superseded`；frontmatter 的 `supersedes` / `superseded_by` 可选，只给高价值页，不回填旧页。`/wiki` 与 `/review` 禁止静默覆盖。lint 在 `superseded_by` 页仍被 `wiki/index.md` 直接链接时报 warning，不裁定谁对。
+- 合成示例：[`topics/x-demo-contradiction-coexistence.md`](topics/x-demo-contradiction-coexistence.md)（两条虚构主张并存）。被取代的归档页不从 index 主推。未改《妥协社会》阅读笔记正文。未做 Slice D–J。
+
 - **Slice B**：新增 `/query`（`.agents/skills/query/SKILL.md`，并同步 Cursor / Claude / Codex）。流程是 index → map/topic，答案引用仓库路径；找不到必须说 **I can't find**，不编造路径。高价值答案只提议回写。
 - 新增 [`evals/retrieval-cases.md`](evals/retrieval-cases.md)（15 题，含释义问法与故意缺失）和 `scripts/check_retrieval_cases.py`。不引入向量库，不把 `references/raw/` 当默认检索源。
 - `wiki/evals/` 不参与 frontmatter / orphan 检查，仍检查相对链接。未做 Slice C–J，未改阅读笔记正文。

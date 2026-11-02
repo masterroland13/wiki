@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Machine lint for wiki Markdown: frontmatter, relative links, orphan candidates.
 
-This is the executable subset of wiki/WIKI_SCHEMA.md. It does not judge
-contradictions, supersession, source mtimes, or prose quality.
+This is the executable subset of wiki/WIKI_SCHEMA.md. It does not decide which
+contradictory claim is true, and it does not read source mtimes or prose quality.
+It does warn when a page with superseded_by is still linked from wiki/index.md.
 
 Exit codes:
   0  no errors (warnings are allowed)
@@ -146,6 +147,7 @@ def lint_root(root: Path) -> LintResult:
         findings.append(Finding(severity, rel, message))
 
     frontmatter_pages = 0
+    superseded_rels: list[str] = []
     for path in pages:
         rel = path.relative_to(root).as_posix()
         page_rel[path.resolve()] = rel
@@ -157,7 +159,7 @@ def lint_root(root: Path) -> LintResult:
         texts[path] = text
         if requires_frontmatter(rel):
             frontmatter_pages += 1
-            check_frontmatter(text, rel, path, add)
+            check_frontmatter(text, rel, path, add, superseded_rels)
 
     inbound: set[Path] = set()
     for path in pages:
@@ -182,11 +184,13 @@ def lint_root(root: Path) -> LintResult:
         if is_orphan_candidate(rel) and resolved not in inbound:
             add("warning", rel, "orphan candidate (no inbound markdown link from another wiki page)")
 
+    warn_index_promoted_superseded(pages, page_rel, texts, superseded_rels, add)
+
     findings.sort(key=lambda item: (0 if item.severity == "error" else 1, item.path, item.message))
     return LintResult(len(pages), frontmatter_pages, findings)
 
 
-def check_frontmatter(text: str, rel: str, path: Path, add) -> None:
+def check_frontmatter(text: str, rel: str, path: Path, add, superseded_rels: list[str]) -> None:
     state, _body, raw = split_frontmatter_raw(text)
     if state == "absent":
         fields = ", ".join(REQUIRED_FIELDS)
@@ -227,6 +231,10 @@ def check_frontmatter(text: str, rel: str, path: Path, add) -> None:
         for item in sources:
             check_source_item(path, rel, item, add)
 
+    check_optional_refs(loaded, "supersedes", rel, path, add)
+    if check_optional_refs(loaded, "superseded_by", rel, path, add):
+        superseded_rels.append(rel)
+
     review = loaded.get("review_after")
     review_missing = review is None or review == ""
     if review_missing:
@@ -234,6 +242,92 @@ def check_frontmatter(text: str, rel: str, path: Path, add) -> None:
             add("warning", rel, f"status {status} is missing review_after (YYYY-MM-DD)")
     elif normalize_date(review) is None:
         add("error", rel, "invalid date for 'review_after' (expected YYYY-MM-DD)")
+
+
+def normalize_ref_field(value) -> tuple[str, list[str]]:
+    """Classify an optional supersedes / superseded_by value.
+
+    Returns ("empty", []), ("ok", entries), or ("invalid", []).
+    Empty means the field is absent in effect: null, blank, or no non-empty strings.
+    """
+    if value is None or value == "":
+        return "empty", []
+    if isinstance(value, str):
+        text = value.strip()
+        if not text:
+            return "empty", []
+        return "ok", [text]
+    if isinstance(value, list):
+        entries: list[str] = []
+        for item in value:
+            if item is None or item == "":
+                continue
+            if not isinstance(item, str):
+                return "invalid", []
+            text = item.strip()
+            if text:
+                entries.append(text)
+        if not entries:
+            return "empty", []
+        return "ok", entries
+    return "invalid", []
+
+
+def check_optional_refs(loaded: dict, key: str, rel: str, path: Path, add) -> list[str]:
+    """Warn on a bad optional ref field. Return entries when it counts as set.
+
+    Missing files are warnings, not errors, so an optional field cannot fail the run.
+    An invalid shape does not count as set.
+    """
+    if key not in loaded:
+        return []
+    shape, entries = normalize_ref_field(loaded.get(key))
+    if shape == "invalid":
+        add("warning", rel, f"{key} must be a path or a list of paths")
+        return []
+    for item in entries:
+        if ref_target_exists(path, item):
+            continue
+        add("warning", rel, f"{key} path not found: {item}")
+    return entries
+
+
+def ref_target_exists(md_file: Path, item: str) -> bool:
+    """True when the entry is not a missing local file. Labels and URLs pass."""
+    if is_external(item) or item.startswith("#"):
+        return True
+    if any(char in item for char in "<>*"):
+        return True
+    if not is_path_like(item):
+        return True
+    dest = item.split("#", 1)[0].split("?", 1)[0].strip()
+    if not dest:
+        return True
+    return resolve_relative(md_file, dest).is_file()
+
+
+def warn_index_promoted_superseded(pages, page_rel, texts, superseded_rels: list[str], add) -> None:
+    """Warn when wiki/index.md links a page whose superseded_by is set.
+
+    Only direct links on wiki/index.md count. Maps, project hubs, and links
+    inside fenced or inline code do not. The check does not walk a graph.
+    """
+    if not superseded_rels:
+        return
+    index_path = next((path for path in pages if page_rel.get(path.resolve()) == "wiki/index.md"), None)
+    if index_path is None:
+        return
+    promoted: set[Path] = set()
+    _state, body = split_frontmatter(texts.get(index_path, ""))
+    for dest in extract_destinations(body):
+        target = classify_destination(index_path, dest)
+        if target is None or not target.is_file():
+            continue
+        promoted.add(target.resolve())
+    for rel in superseded_rels:
+        page = next((path for path in pages if page_rel.get(path.resolve()) == rel), None)
+        if page is not None and page.resolve() in promoted:
+            add("warning", rel, "superseded_by is set but wiki/index.md still links to this page")
 
 
 def check_source_item(path: Path, rel: str, item, add) -> None:
@@ -402,7 +496,8 @@ def format_report(result: LintResult) -> str:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Lint wiki Markdown frontmatter, relative links, and orphan candidates. "
+            "Lint wiki Markdown frontmatter, relative links, orphan candidates, "
+            "and index links to pages with superseded_by. "
             "Exit 0 when there is no error (warnings allowed). "
             "Exit 1 on errors, or on warnings if --strict. Exit 2 on usage or setup failure."
         )

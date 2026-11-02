@@ -74,12 +74,22 @@ description: Archive URLs, screenshots, chat excerpts, and job posts into wiki R
 
 页面至少：**一句结论 + 来源 + 2 个 Related**；高价值页补 claim / evidence / boundary（ingest 模板）。
 
+### 冲突与取代
+
+发现新材料与已有页冲突时，**禁止静默覆盖**。不要删改已有主张来显得一致，也不要只留下认为对的一边。规则在 `wiki/WIKI_SCHEMA.md`「矛盾与取代」。字段可选，只给高价值页用，不要求回填旧页。
+
+- **并存**：在相关页写 `## Contradictions`（对方路径、两边主张、各自来源）。不裁定谁对。
+- **更换阅读入口**：旧页保留原文，写 `superseded_by`；新页写 `supersedes`。路径相对该页。这不表示旧主张为假。
+- 带 `superseded_by` 的页不要放进 `wiki/index.md` 主表。从后继页链入即可。
+- 合成示例：`wiki/topics/x-demo-contradiction-coexistence.md`（被取代的一页不在 index 主表）。
+
 ## 轻量验收
 
 - [ ] 新页目录正确；`sources` 可追溯
 - [ ] 至少一个入口（index / map / project）可到达
 - [ ] 图片文件存在、相对路径正确、有 alt（+ 必要时说明）
 - [ ] 可选：`scripts/wiki_verify_images.sh` 或 `/lint` 查坏链与 frontmatter
+- [ ] 若与已有页冲突：已写 `## Contradictions` 或 supersession 字段，没有静默覆盖
 
 ##  bundled references（按需读）
 

@@ -74,6 +74,14 @@ review_after: 2026-07-15
 |------|------|
 | [Learning progress](./projects/learning-progress/index.md) | `/teacher` 会话记忆 hub |
 
+## 协议示例
+
+合成页，用来演示两条主张可以同时留下。不是阅读笔记。
+
+| 笔记 | 说明 |
+|------|------|
+| [矛盾并存（合成）](./topics/x-demo-contradiction-coexistence.md) | 当天重读与间隔复习两条虚构主张同页保留；不裁定谁对 |
+
 ## 维护技能
 
 | 技能 | 触发 |
@@ -81,4 +89,4 @@ review_after: 2026-07-15
 | `/wiki` | 投喂 URL、截图、聊天 → 归档 |
 | `/query` | 按已有笔记回答；金标见 [retrieval cases](./evals/retrieval-cases.md) |
 | `/review` | 复盘 inbox、到期页 |
-| `/lint` | 坏链、导航、frontmatter |
+| `/lint` | 坏链、导航、frontmatter；`superseded_by` 页仍被本页主推时 warning |

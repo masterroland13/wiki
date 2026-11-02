@@ -298,3 +298,157 @@ def test_repository_has_no_errors() -> None:
     result = lint_wiki.lint_root(REPO_ROOT)
     assert result.errors == []
     assert result.pages_scanned > 0
+    assert not any("still links to this page" in item.message for item in result.warnings)
+    assert not any("must be a path or a list of paths" in item.message for item in result.warnings)
+    assert not any(item.message.startswith("superseded_by path not found") for item in result.warnings)
+    assert not any(item.message.startswith("supersedes path not found") for item in result.warnings)
+
+
+def test_contradiction_demo_keeps_both_claims_and_hides_superseded_page_from_index() -> None:
+    demo = (REPO_ROOT / "wiki/topics/x-demo-contradiction-coexistence.md").read_text(encoding="utf-8")
+    filing = (REPO_ROOT / "wiki/topics/x-demo-superseded-filing.md").read_text(encoding="utf-8")
+    index = (REPO_ROOT / "wiki/index.md").read_text(encoding="utf-8")
+    assert "## Contradictions" in demo and "## Superseded" in demo
+    assert "不裁定" in demo
+    assert "78" in demo and "81" in demo
+    assert "supersedes:" in demo
+    assert "superseded_by:" not in demo
+    assert "## Contradictions" in filing and "## Superseded" in filing
+    assert "phil-" in filing
+    assert "superseded_by:" in filing
+    assert "x-demo-contradiction-coexistence.md" in index
+    assert "x-demo-superseded-filing.md" not in index
+
+
+@pytest.mark.parametrize("value", ["./newer.md", "\n  - ./newer.md"])
+def test_index_link_to_superseded_page_warns(tmp_path: Path, value: str) -> None:
+    write(tmp_path, "wiki/topics/newer.md", page("Successor.\n"))
+    write(
+        tmp_path,
+        "wiki/topics/old.md",
+        page("See [newer](./newer.md).\n", superseded_by=value),
+    )
+    write(tmp_path, "wiki/index.md", page("See [old](./topics/old.md).\n", type="map"))
+    result = lint_wiki.lint_root(tmp_path)
+    assert result.errors == []
+    assert any(
+        item.path == "wiki/topics/old.md"
+        and item.message == "superseded_by is set but wiki/index.md still links to this page"
+        for item in result.warnings
+    )
+
+
+def test_index_promoted_superseded_page_is_warning_not_error(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    write(tmp_path, "wiki/topics/newer.md", page("Successor.\n"))
+    write(
+        tmp_path,
+        "wiki/topics/old.md",
+        page("See [newer](./newer.md).\n", superseded_by="./newer.md"),
+    )
+    write(tmp_path, "wiki/index.md", page("See [old](./topics/old.md).\n", type="map"))
+    code = lint_wiki.main(["--root", str(tmp_path)])
+    out = capsys.readouterr().out
+    assert code == 0
+    assert "WARN wiki/topics/old.md: superseded_by is set but wiki/index.md still links to this page" in out
+    assert "ERROR" not in out
+    strict = lint_wiki.main(["--root", str(tmp_path), "--strict"])
+    assert strict == 1
+
+
+def test_superseded_page_linked_only_from_map_or_project_is_not_promoted(tmp_path: Path) -> None:
+    write(tmp_path, "wiki/topics/newer.md", page("Successor.\n"))
+    write(
+        tmp_path,
+        "wiki/topics/old.md",
+        page("See [newer](./newer.md).\n", superseded_by="./newer.md"),
+    )
+    write(tmp_path, "wiki/maps/hub.md", page("See [old](../topics/old.md).\n", type="map"))
+    write(
+        tmp_path,
+        "wiki/projects/demo/index.md",
+        page("See [old](../../topics/old.md).\n", type="project-note"),
+    )
+    write(
+        tmp_path,
+        "wiki/index.md",
+        page("See [map](./maps/hub.md) and [project](./projects/demo/index.md).\n", type="map"),
+    )
+    result = lint_wiki.lint_root(tmp_path)
+    assert result.findings == []
+
+
+def test_successor_on_index_with_only_supersedes_does_not_warn(tmp_path: Path) -> None:
+    write(tmp_path, "wiki/topics/old.md", page("Old wording stays.\n"))
+    write(
+        tmp_path,
+        "wiki/topics/newer.md",
+        page("See [old](./old.md).\n", supersedes="./old.md"),
+    )
+    write(tmp_path, "wiki/index.md", page("See [newer](./topics/newer.md).\n", type="map"))
+    result = lint_wiki.lint_root(tmp_path)
+    assert result.findings == []
+
+
+def test_empty_or_absent_superseded_by_does_not_warn(tmp_path: Path) -> None:
+    write(tmp_path, "wiki/topics/empty.md", page("Empty field.\n", superseded_by="[]"))
+    write(tmp_path, "wiki/topics/absent.md", page("No field.\n"))
+    write(
+        tmp_path,
+        "wiki/index.md",
+        page("See [empty](./topics/empty.md) and [absent](./topics/absent.md).\n", type="map"),
+    )
+    result = lint_wiki.lint_root(tmp_path)
+    assert result.findings == []
+
+
+def test_index_code_mention_does_not_promote_superseded_page(tmp_path: Path) -> None:
+    write(tmp_path, "wiki/topics/newer.md", page("Successor.\n"))
+    write(
+        tmp_path,
+        "wiki/topics/old.md",
+        page("See [newer](./newer.md).\n", superseded_by="./newer.md"),
+    )
+    write(tmp_path, "wiki/topics/hub.md", page("See [old](./old.md).\n"))
+    index_body = "\n".join(
+        [
+            "Mention `./topics/old.md` in inline code.",
+            "",
+            "```markdown",
+            "[old](./topics/old.md)",
+            "```",
+            "",
+            "See [hub](./topics/hub.md).",
+            "",
+        ]
+    )
+    write(tmp_path, "wiki/index.md", page(index_body, type="map"))
+    result = lint_wiki.lint_root(tmp_path)
+    assert result.findings == []
+
+
+def test_invalid_superseded_by_shape_warns_without_promotion(tmp_path: Path) -> None:
+    text = page("See [hub](./hub.md).\n")
+    text = text.replace("---\n\n", "superseded_by: 3\n---\n\n", 1)
+    write(tmp_path, "wiki/topics/old.md", text)
+    write(tmp_path, "wiki/topics/hub.md", page("Hub.\n"))
+    write(tmp_path, "wiki/index.md", page("See [old](./topics/old.md).\n", type="map"))
+    result = lint_wiki.lint_root(tmp_path)
+    assert result.errors == []
+    assert [item.message for item in result.warnings] == ["superseded_by must be a path or a list of paths"]
+
+
+def test_missing_supersession_path_warns_and_does_not_fail(tmp_path: Path) -> None:
+    write(
+        tmp_path,
+        "wiki/topics/old.md",
+        page("Kept.\n", superseded_by="./missing.md", supersedes="./also-missing.md"),
+    )
+    write(tmp_path, "wiki/index.md", page("Root only.\n", type="map"))
+    result = lint_wiki.lint_root(tmp_path)
+    assert result.errors == []
+    blob = "\n".join(messages(result, "warning"))
+    assert "wiki/topics/old.md: superseded_by path not found: ./missing.md" in blob
+    assert "wiki/topics/old.md: supersedes path not found: ./also-missing.md" in blob
+    assert "still links to this page" not in blob

@@ -8,7 +8,7 @@ Review 不只是「整理干净」，还要从 **已有图** 里发现新边、�
 
 | 信号 | 问什么 | 典型产出 |
 |------|--------|----------|
-| **矛盾** | 哪两个 topic 结论打架？ | 第三篇 synthesis topic，或改 confidence |
+| **矛盾** | 哪两个 topic 结论打架？ | 在相关页写 `## Contradictions`（对方路径、两边主张、各自来源）。可以另开一页讨论，但禁止静默覆盖：不得删改双方主张。不要只改 `confidence` 就算调和完。更换阅读入口用 `supersedes` / `superseded_by`。见 `wiki/WIKI_SCHEMA.md`「矛盾与取代」 |
 | **空白** | map 上列了但没链的 topic？ | inbox 一条 Capture |
 | **簇** | 3+ 页同 tag 却无 map？ | 提议新 `wiki/maps/...` |
 | **桥梁** | A 领域结论能否解释 B？ | Related 互链 + 一句跨域主张 |
@@ -25,6 +25,7 @@ Review 不只是「整理干净」，还要从 **已有图** 里发现新边、�
 
 ## 禁止
 
+- 发现冲突时禁止静默覆盖。写入 `## Contradictions` 或 supersession 字段，不裁定谁对
 - 不要编造 wiki 里不存在的页（先 grep 确认）
 - 不要空泛「可以多读论文」— 要具体到 map/topic/URL
 - 不要用 inspiration 代替 teacher：这里是 **从库存生问题**，不是教新课

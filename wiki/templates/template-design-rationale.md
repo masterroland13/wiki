@@ -32,6 +32,7 @@
 | 主张-证据分离 | 只抄摘要、缺可验证性 | `Core Claim` + `Evidence` / `My Assessment` |
 | 显式边界和反例 | 过度泛化、错误迁移 | `Boundaries / Counterexamples` |
 | 记录不确定性 | 结论僵化、难迭代 | `Open Questions / Next Verification` + `confidence` |
+| 冲突显式化，取代只留痕 | 静默改掉旧主张 | `## Contradictions`、`## Superseded`；可选 `supersedes` / `superseded_by` |
 | 强制互链 | 知识孤岛 | `Related` 区块 |
 
 ## 使用建议（务实版）
@@ -39,3 +40,4 @@
 1. 首轮写作只完成：`TL;DR` + `sources` + `Related`。
 2. 仅对高价值页面补写 `Evidence` 与 `Boundaries`。
 3. 每周回顾时补 `confidence` 和 `review_after`，而不是创建当天写完所有字段。
+4. `supersedes` / `superseded_by` 保持空白，直到这一页真的要记录冲突或更换阅读入口。见 [`WIKI_SCHEMA.md`](../WIKI_SCHEMA.md)「矛盾与取代」。
