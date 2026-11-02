@@ -5,7 +5,7 @@
 > 审查手册：[`wiki-slice-audit.md`](../handbooks/wiki-slice-audit.md)  
 > 冲突序：`AGENTS.md` / `wiki/WIKI_SCHEMA.md` > `ROADMAP.md` > 本计划 > 其它 docs  
 > 北极星：git + markdown + agent；Obsidian 最多只读  
-> 状态：2026-11-02 已确认。Slice A、Slice B、Slice C 与 Slice D 已实现。未做 Slice E–J。  
+> 状态：2026-11-02 已确认。Slice A、Slice B、Slice C、Slice D 与 Slice E 已实现。未做 Slice F–J。  
 > 日期：2026-11-02（Asia/Shanghai）
 
 ---
@@ -177,6 +177,9 @@
 - **易返工点**：级联范围膨胀 → 限定 entity/map/index/log
 
 ### Slice E — Source-clock Stale 检测
+
+> 状态：2026-11-02 已实现（`scripts/lint_wiki.py` 比较 `wiki/` 外 source 的 mtime 本地日历日期与 `updated`；更晚则 warning，建议 `status: stale`，不写回。URL 与 `wiki/` 内互链跳过）。不要在本切片上重做。未做 Slice F–J。未改 Slice D 的 L1 默认与 `log.md` 协议。
+
 - **工期**：0.5–1 天  
 - **依赖闸门**：A
 - **做什么**：
@@ -282,4 +285,4 @@
 - [x] 同意默认假设（未另行修订）
 - [x] 2026-11-02 确认：落盘 docs，并实现 Slice A
 
-后续切片仍遵守：不改 ingest 默认深度；不上 GraphRAG / Obsidian 写入真相源；不重写既有阅读笔记正文。未确认的切片不开工。Slice B、Slice C 与 Slice D 已单独落地；Slice E–J 仍未开工。
+后续切片仍遵守：不改 ingest 默认深度；不上 GraphRAG / Obsidian 写入真相源；不重写既有阅读笔记正文。未确认的切片不开工。Slice B、Slice C、Slice D 与 Slice E 已单独落地；Slice F–J 仍未开工。

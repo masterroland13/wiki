@@ -27,6 +27,7 @@ description: Light maintenance for this wiki—navigation, links, frontmatter, a
    - error（缺字段、非法枚举、坏相对链接、坏 `sources` 路径、非法日期）先修
    - warning（orphan 候选、`growing` / `stale` 缺 `review_after`、`superseded_by` 仍被 `wiki/index.md` 直接链接）能小修就修
    - 最后一种：从 `wiki/index.md` 拿掉该链接，保留页面，让后继页链入。不要删页，不要清空字段来消掉 warning，也不要改写主张。哪一边为真不在本技能。规则见 `wiki/WIKI_SCHEMA.md`「矛盾与取代」和「机器规则子集」
+   - source-clock warning 不要自动修。`wiki/` 外的 source 文件，其 mtime 的本地日历日期晚于页 `updated` 时，消息是 `source '<path>' is newer than updated (YYYY-MM-DD > YYYY-MM-DD); consider status: stale`。它只建议人考虑 `status: stale`。不要为了消掉它去改 `status`、`updated` 或正文。URL、非路径标签和 `wiki/` 内互链不会触发。规则见 `wiki/WIKI_SCHEMA.md`「Source-clock」
    - 不要为了清掉 warning 去改写既有阅读笔记正文；历史页可以暂时留着 warning
 
 3. 脚本不管、仍要人看的项：

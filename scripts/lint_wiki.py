@@ -2,8 +2,10 @@
 """Machine lint for wiki Markdown: frontmatter, relative links, orphan candidates.
 
 This is the executable subset of wiki/WIKI_SCHEMA.md. It does not decide which
-contradictory claim is true, and it does not read source mtimes or prose quality.
-It does warn when a page with superseded_by is still linked from wiki/index.md.
+contradictory claim is true, and it does not rewrite page status or body.
+It warns when a page with superseded_by is still linked from wiki/index.md.
+It also warns when a source file outside wiki/ has a local mtime date newer
+than the page's updated date. URL sources and wiki-internal paths are skipped.
 
 Exit codes:
   0  no errors (warnings are allowed)
@@ -160,7 +162,7 @@ def lint_root(root: Path) -> LintResult:
         texts[path] = text
         if requires_frontmatter(rel):
             frontmatter_pages += 1
-            check_frontmatter(text, rel, path, add, superseded_rels)
+            check_frontmatter(text, rel, path, root, add, superseded_rels)
 
     inbound: set[Path] = set()
     for path in pages:
@@ -191,7 +193,7 @@ def lint_root(root: Path) -> LintResult:
     return LintResult(len(pages), frontmatter_pages, findings)
 
 
-def check_frontmatter(text: str, rel: str, path: Path, add, superseded_rels: list[str]) -> None:
+def check_frontmatter(text: str, rel: str, path: Path, root: Path, add, superseded_rels: list[str]) -> None:
     state, _body, raw = split_frontmatter_raw(text)
     if state == "absent":
         fields = ", ".join(REQUIRED_FIELDS)
@@ -217,7 +219,7 @@ def check_frontmatter(text: str, rel: str, path: Path, add, superseded_rels: lis
     require_enum(loaded, "type", TYPES, rel, add)
     status = require_enum(loaded, "status", STATUSES, rel, add)
     require_date_field(loaded, "created", rel, add)
-    require_date_field(loaded, "updated", rel, add)
+    updated = require_date_field(loaded, "updated", rel, add)
     tags = require_list(loaded, "tags", rel, add)
     sources = require_list(loaded, "sources", rel, add)
 
@@ -230,7 +232,7 @@ def check_frontmatter(text: str, rel: str, path: Path, add, superseded_rels: lis
 
     if sources is not None:
         for item in sources:
-            check_source_item(path, rel, item, add)
+            check_source_item(root, path, rel, item, updated, add)
 
     check_optional_refs(loaded, "supersedes", rel, path, add)
     if check_optional_refs(loaded, "superseded_by", rel, path, add):
@@ -331,7 +333,12 @@ def warn_index_promoted_superseded(pages, page_rel, texts, superseded_rels: list
             add("warning", rel, "superseded_by is set but wiki/index.md still links to this page")
 
 
-def check_source_item(path: Path, rel: str, item, add) -> None:
+def check_source_item(root: Path, path: Path, rel: str, item, updated: str | None, add) -> None:
+    """Exist-check a source entry, then warn when an outside-wiki file is newer.
+
+    This never writes the page. URL and non-path tags return before any clock
+    comparison. A missing path stays the existing error and does not also warn.
+    """
     if isinstance(item, dict):
         return
     if not isinstance(item, str):
@@ -344,9 +351,77 @@ def check_source_item(path: Path, rel: str, item, add) -> None:
         return
     if not is_path_like(text):
         return
-    target = resolve_relative(path, text)
-    if not target.is_file():
+    target = locate_source_file(root, path, text)
+    if target is None:
         add("error", rel, f"sources path not found: {text}")
+        return
+    if updated is None or not is_source_clock_target(root, target):
+        return
+    source_date = file_mtime_date(target)
+    updated_date = dt.date.fromisoformat(updated)
+    if source_date > updated_date:
+        add("warning", rel, stale_source_message(text, source_date.isoformat(), updated))
+
+
+def stale_source_message(path: str, source_date: str, updated: str) -> str:
+    """Exact warning text. Schema and /lint quote this sentence."""
+    return (
+        f"source '{path}' is newer than updated "
+        f"({source_date} > {updated}); consider status: stale"
+    )
+
+
+def locate_source_file(root: Path, md_file: Path, text: str) -> Path | None:
+    """Existing file for a source string.
+
+    Page-relative wins when that file exists. Otherwise a repo-root-relative
+    path (``references/raw/...``) is accepted so it is not a false missing-path
+    error. Neither match means the caller reports ``sources path not found``.
+    """
+    page_target = resolve_relative(md_file, text)
+    if page_target.is_file():
+        return page_target
+    return repo_relative_file(root, text)
+
+
+def repo_relative_file(root: Path, text: str) -> Path | None:
+    """File addressed from the repository root, or None when that shape misses.
+
+    Leading ``.`` (page-relative) and ``..`` segments are not repo-relative.
+    The resolved path must stay inside ``root``.
+    """
+    if text.startswith(("/", "\\")) or text.startswith("."):
+        return None
+    if any(part == ".." for part in Path(text).parts):
+        return None
+    candidate = (root / text).resolve()
+    try:
+        candidate.relative_to(root.resolve())
+    except ValueError:
+        return None
+    if candidate.is_file():
+        return candidate
+    return None
+
+
+def is_source_clock_target(root: Path, target: Path) -> bool:
+    """True for an existing file inside the repo and outside ``wiki/``.
+
+    Wiki-internal paths are note-to-note links. Checkout stamps those files
+    with one mtime, so comparing them would warn the whole library.
+    """
+    try:
+        rel = target.resolve().relative_to(root.resolve())
+    except ValueError:
+        return False
+    if not rel.parts or rel.parts[0] == "wiki":
+        return False
+    return target.resolve().is_file()
+
+
+def file_mtime_date(path: Path) -> dt.date:
+    """Local calendar date of ``st_mtime``. The clock time is discarded."""
+    return dt.datetime.fromtimestamp(path.stat().st_mtime).date()
 
 
 def require_enum(data: dict, key: str, allowed: set[str], rel: str, add) -> str | None:
@@ -364,12 +439,15 @@ def require_enum(data: dict, key: str, allowed: set[str], rel: str, add) -> str 
     return text
 
 
-def require_date_field(data: dict, key: str, rel: str, add) -> None:
+def require_date_field(data: dict, key: str, rel: str, add) -> str | None:
     if key not in data or data[key] is None or data[key] == "":
         add("error", rel, f"missing frontmatter field '{key}'")
-        return
-    if normalize_date(data[key]) is None:
+        return None
+    normalized = normalize_date(data[key])
+    if normalized is None:
         add("error", rel, f"invalid date for '{key}' (expected YYYY-MM-DD)")
+        return None
+    return normalized
 
 
 def require_list(data: dict, key: str, rel: str, add) -> list | None:
@@ -498,7 +576,8 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
             "Lint wiki Markdown frontmatter, relative links, orphan candidates, "
-            "and index links to pages with superseded_by. "
+            "index links to pages with superseded_by, and source-clock staleness "
+            "(mtime date of a source file outside wiki/ versus updated). "
             "Exit 0 when there is no error (warnings allowed). "
             "Exit 1 on errors, or on warnings if --strict. Exit 2 on usage or setup failure."
         )
