@@ -4,6 +4,8 @@ Newest entries at the top.
 
 ## 2026-11-02
 
+- **Slice E**：source-clock stale。知识页 `sources` 指向仓库内、`wiki/` 外的已存在文件时，`scripts/lint_wiki.py` 把该文件 mtime 的本地日历日期与页 `updated` 比较。源日期更晚则 warning，建议考虑 `status: stale`，不写回页面。纯 URL 与非路径标签跳过；`wiki/` 内互链不参与比较。未改 L1 默认，也未改 `log.md` 协议。未做 Slice F–J。未改《妥协社会》笔记正文。
+
 - **Slice D**：新增 [`log.md`](log.md) 作为操作日志（ingest / query / lint）。条目前缀 `## [YYYY-MM-DD] ingest|query|lint | title`。`changelog.md` 仍只记结构性变更。默认归档深度仍是 **L1**；L2 compile 须用户说出「L2 / 深挖 / compile / 级联」，且只级联相关 entity、相关 map、index，并写一条 `ingest`。`log.md` 与 changelog 一样不要求知识页 frontmatter。未改阅读笔记正文。未做 Slice E–J。
 
 - **Slice C**：矛盾与取代协议。模板增加 `## Contradictions` 与 `## Superseded`；frontmatter 的 `supersedes` / `superseded_by` 可选，只给高价值页，不回填旧页。`/wiki` 与 `/review` 禁止静默覆盖。lint 在 `superseded_by` 页仍被 `wiki/index.md` 直接链接时报 warning，不裁定谁对。

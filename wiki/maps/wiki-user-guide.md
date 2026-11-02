@@ -251,6 +251,7 @@ python3 scripts/lint_wiki.py
 4. 结构性变更才补 `wiki/changelog.md`。`/lint` 收尾另写一条 `wiki/log.md`（`lint`），不要把操作流水写进 changelog
 5. `growing` / `stale` 的 `confidence` 仍人工看；缺 `review_after` 由脚本报 warning
 6. 带 `superseded_by` 仍被 `wiki/index.md` 直接链接时，脚本报 warning。从 index 拿掉链接并保留该页。不要删页，也不要改写主张来消掉这条 warning
+7. source-clock：`wiki/` 外的 source 文件，mtime 的本地日历日期晚于 `updated` 时，脚本 warning 并建议考虑 `status: stale`。不要为了消掉它去改 `status`、`updated` 或正文。URL 与 `wiki/` 内互链不触发。细则见 Schema「Source-clock」
 
 ---
 

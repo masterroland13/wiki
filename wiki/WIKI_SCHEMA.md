@@ -161,7 +161,7 @@ L2 compile 只在 L1 那一页之外多做四件事：更新**相关** entity（
 
 ## 机器规则子集（`scripts/lint_wiki.py`）
 
-本表是可失败的契约。哪一边主张为真、source mtime、向量检索不在本子集。`superseded_by` 仍被 index 主推是 warning，规则写在下面。故意写坏的页面不入库；`scripts/test_lint_wiki.py` 用临时文件断言路径和退出码。
+本表是可失败的契约。哪一边主张为真、向量检索不在本子集。source-clock 只比较 `wiki/` 外已存在文件的 mtime 日期与 `updated`，不改页面。`superseded_by` 仍被 index 主推是 warning，规则写在下面。故意写坏的页面不入库；`scripts/test_lint_wiki.py` 用临时文件断言路径和退出码。
 
 依赖：Python 3.11+、PyYAML。测试另需 pytest。
 
@@ -195,13 +195,14 @@ python3 -m pytest scripts/test_lint_wiki.py -q
 | `status` 不在 `seed` \| `growing` \| `stable` \| `stale` | error |
 | `created` / `updated` / 非空的 `review_after` 不是合法 `YYYY-MM-DD` | error |
 | `tags` / `sources` 不是列表，或某个 tag 不是非空字符串 | error |
-| `sources` 中的相对路径不存在（URL 跳过；没有 `/` 且不以 `.md` 结尾的标签跳过） | error |
+| `sources` 中像路径的条目，按当前页相对路径和仓库根相对路径都找不到文件（URL 跳过；没有 `/` 且不以 `.md` 结尾的标签跳过） | error。消息：`sources path not found: {条目}` |
 | Markdown 或图片的相对链接目标不是已存在文件 | error |
 | `growing` 或 `stale` 缺少 `review_after` | warning |
 | orphan 候选 | warning |
 | `superseded_by` 已设置，且 `wiki/index.md` 仍有直接 Markdown 链接指向该页 | warning。消息：`superseded_by is set but wiki/index.md still links to this page` |
 | `supersedes` 或 `superseded_by` 不是字符串，也不是字符串列表 | warning。消息：`{字段} must be a path or a list of paths` |
 | 上述字段里像路径的条目不存在 | warning。消息：`{字段} path not found: {条目}`。不像路径的标签跳过 |
+| `wiki/` 外的 source 文件，其 mtime 本地日历日期晚于 `updated` | warning。消息：`source '{路径}' is newer than updated ({源日期} > {updated}); consider status: stale`。不写回 `status` |
 
 `tags` 与 `sources` 可以是空列表。`seed` / `stable` 可以不写 `review_after`。`supersedes` 与 `superseded_by` 可以省略、为空字符串或空列表。
 
@@ -212,6 +213,42 @@ python3 -m pytest scripts/test_lint_wiki.py -q
 - 只从 map、使用手册、`wiki/projects/**/index.md` 或其它 topic 链入，不算主推。不沿链接再走一层。
 - 只写了 `supersedes`、没有 `superseded_by` 的页，可以继续留在 index 里。
 - 处理这条 warning 时：从 `wiki/index.md` 拿掉该链接，保留页面，让后继页链过来。不要删页，也不要为了消 warning 改写主张。
+
+### Source-clock（mtime 日期）
+
+时钟只用文件系统 mtime（`st_mtime`），不用源 frontmatter 里的日期，也不读 git 历史。Raw、PDF 和图片通常没有 YAML 日期；mtime 对每个已存在文件都有定义。
+
+**比较规则**
+
+1. 只看知识页 frontmatter 的 `sources`。
+2. 条目要能解析成仓库内、且不在 `wiki/` 下的已存在文件。顺序：先按**当前页**的相对路径；该路径上没有文件时，再按**仓库根**的相对路径（repo-relative：不以 `/` 或 `.` 开头，路径段里没有 `..`，解析后仍在仓库内）。典型写法是 `references/raw/...`，或从笔记页写出的 `../../references/raw/...`。页相对路径上已经有文件时用它，不再改看仓库根。
+3. 取该文件的 mtime，用**运行 lint 的机器的本地时区**转成日历日期，丢掉时分秒。
+4. 页 `updated` 是 `YYYY-MM-DD`，没有时区，也没有时刻。
+5. 仅当源日期**晚于** `updated` 时发 warning。同一天不算更新。源日期更早或相同则不发这条 warning。当前 `status` 是什么都不影响这条比较。
+
+**警告原文**（`{路径}` 是 `sources` 里写下的字符串，两个日期都是 `YYYY-MM-DD`）：
+
+`source '{路径}' is newer than updated ({源日期} > {updated}); consider status: stale`
+
+一条 source 一条 warning。脚本不写回 `status`、`updated` 或正文。把 `status` 改成 `stale` 不会消除这条 warning。人在审完来源之后，若把 `updated` 改到不早于源日期，警告才会消失。脚本不做这件事。
+
+**跳过（不发这条 warning，也不把 URL 或标签说成过期）**
+
+- `http` / `https` 以及其它带 scheme 的 URL，和以 `//` 开头的地址
+- 纯锚点（`#...`）
+- 含 `<` `>` `*` 的占位符
+- 不像路径的标签：没有 `/`、不以 `.` 开头、也不以 `.md` 结尾（例如 `synthetic-demo`）
+- `sources` 里的 mapping，以及空字符串
+- 页相对路径和仓库根相对路径都找不到文件：仍是 error `sources path not found: ...`，不另报 stale
+- 解析到仓库外的文件
+- 解析到 `wiki/` 里面的文件（笔记互链、`WIKI_SCHEMA.md` 等）
+- `updated` 不是合法日期（已有 error），无法比较
+
+`wiki/` 内的文件不参加比较：git checkout 会把这些文件的 mtime 收成同一天，用笔记互链做时钟会在每次检出后大面积误报。
+
+**时区与截断**
+
+比较的是两个日历日期，不是时刻。本地时区由运行环境决定（`datetime.fromtimestamp`）。跨时区或靠近午夜时，WSL 与 Windows 可能差一天。检出仓库会刷新 mtime。`wiki/` 外、且被 `sources` 点名的文件，可能因此显得比页上的 `updated` 新。这仍只是 warning。默认退出码不因此变成失败；`--strict` 时它和其它 warning 一样会让退出码变成 1。
 
 ### 退出码
 

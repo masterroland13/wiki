@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import datetime as dt
 import importlib.util
+import os
 import sys
 from pathlib import Path
 
@@ -44,6 +46,13 @@ def page(body: str = "Body.\n", **fields: str) -> str:
     lines.append("")
     lines.append(body)
     return "\n".join(lines)
+
+
+def touch_local(path: Path, ymd: str, hour: int = 12) -> None:
+    """Set mtime to local noon (or another hour) so the calendar date is stable."""
+    when = dt.datetime.fromisoformat(f"{ymd}T{hour:02d}:00:00")
+    stamp = when.timestamp()
+    os.utime(path, (stamp, stamp))
 
 
 def messages(result, severity: str | None = None) -> list[str]:
@@ -491,3 +500,158 @@ def test_missing_supersession_path_warns_and_does_not_fail(tmp_path: Path) -> No
     assert "wiki/topics/old.md: superseded_by path not found: ./missing.md" in blob
     assert "wiki/topics/old.md: supersedes path not found: ./also-missing.md" in blob
     assert "still links to this page" not in blob
+
+
+def test_source_mtime_newer_than_updated_warns_and_does_not_rewrite(tmp_path: Path) -> None:
+    raw = tmp_path / "references/raw/clip.md"
+    raw.parent.mkdir(parents=True)
+    raw.write_text("# clip\n", encoding="utf-8")
+    touch_local(raw, "2026-11-02")
+    rel = "wiki/topics/from-raw.md"
+    text = page(
+        "Notes.\n",
+        updated="2026-01-01",
+        status="seed",
+        sources="\n  - ../../references/raw/clip.md\n  - https://example.com/article\n  - weread-tag",
+    )
+    write(tmp_path, rel, text)
+    write(tmp_path, "wiki/index.md", page("See [page](./topics/from-raw.md).\n", type="map"))
+    before = (tmp_path / rel).read_bytes()
+    result = lint_wiki.lint_root(tmp_path)
+    assert (tmp_path / rel).read_bytes() == before
+    assert b"status: seed" in before
+    assert result.errors == []
+    stale = [item for item in result.warnings if "consider status: stale" in item.message]
+    assert stale == [
+        lint_wiki.Finding(
+            "warning",
+            rel,
+            "source '../../references/raw/clip.md' is newer than updated "
+            "(2026-11-02 > 2026-01-01); consider status: stale",
+        )
+    ]
+    assert not any("example.com" in item.message or "weread-tag" in item.message for item in result.findings)
+    assert lint_wiki.main(["--root", str(tmp_path)]) == 0
+
+
+def test_repo_relative_source_mtime_newer_warns_without_missing_path_error(tmp_path: Path) -> None:
+    raw = tmp_path / "references/raw/clip.md"
+    raw.parent.mkdir(parents=True)
+    raw.write_text("raw\n", encoding="utf-8")
+    touch_local(raw, "2026-06-15", hour=23)
+    rel = "wiki/topics/repo-path.md"
+    text = page("Notes.\n", updated="2026-06-01", sources="\n  - references/raw/clip.md")
+    write(tmp_path, rel, text)
+    write(tmp_path, "wiki/index.md", page("See [page](./topics/repo-path.md).\n", type="map"))
+    before = (tmp_path / rel).read_bytes()
+    result = lint_wiki.lint_root(tmp_path)
+    assert (tmp_path / rel).read_bytes() == before
+    assert result.errors == []
+    assert [item.message for item in result.warnings if "consider status: stale" in item.message] == [
+        "source 'references/raw/clip.md' is newer than updated (2026-06-15 > 2026-06-01); consider status: stale"
+    ]
+
+
+def test_url_only_sources_skip_source_clock(tmp_path: Path) -> None:
+    write(
+        tmp_path,
+        "wiki/topics/web.md",
+        page(
+            "Web only.\n",
+            updated="2020-01-01",
+            sources="\n  - https://example.com/a\n  - http://example.com/b\n  - //cdn.example.com/c\n  - synthetic-demo",
+        ),
+    )
+    write(tmp_path, "wiki/index.md", page("See [web](./topics/web.md).\n", type="map"))
+    before = (tmp_path / "wiki/topics/web.md").read_bytes()
+    result = lint_wiki.lint_root(tmp_path)
+    assert (tmp_path / "wiki/topics/web.md").read_bytes() == before
+    assert result.errors == []
+    assert not any("consider status: stale" in item.message for item in result.findings)
+
+
+def test_missing_source_path_does_not_emit_stale_warning(tmp_path: Path) -> None:
+    write(
+        tmp_path,
+        "wiki/topics/src.md",
+        page(
+            "Missing.\n",
+            updated="2020-01-01",
+            sources="\n  - references/raw/missing.md\n  - ../missing-source.md",
+        ),
+    )
+    write(tmp_path, "wiki/index.md", page("See [src](./topics/src.md).\n", type="map"))
+    before = (tmp_path / "wiki/topics/src.md").read_bytes()
+    result = lint_wiki.lint_root(tmp_path)
+    assert (tmp_path / "wiki/topics/src.md").read_bytes() == before
+    assert result.errors
+    blob = "\n".join(messages(result, "error"))
+    assert "sources path not found: references/raw/missing.md" in blob
+    assert "sources path not found: ../missing-source.md" in blob
+    assert not any("consider status: stale" in item.message for item in result.findings)
+
+
+def test_wiki_internal_source_mtime_is_not_a_source_clock(tmp_path: Path) -> None:
+    write(tmp_path, "wiki/entities/book.md", page("Entity.\n", type="entity"))
+    touch_local(tmp_path / "wiki/entities/book.md", "2026-11-02")
+    rel = "wiki/topics/notes.md"
+    text = page(
+        "Notes.\n",
+        updated="2020-01-01",
+        sources="\n  - ../entities/book.md",
+    )
+    write(tmp_path, rel, text)
+    write(tmp_path, "wiki/index.md", page("See [notes](./topics/notes.md).\n", type="map"))
+    result = lint_wiki.lint_root(tmp_path)
+    assert result.errors == []
+    assert not any("consider status: stale" in item.message for item in result.findings)
+
+
+def test_source_mtime_same_day_or_older_does_not_warn(tmp_path: Path) -> None:
+    same = tmp_path / "references/raw/same.md"
+    older = tmp_path / "references/raw/older.md"
+    same.parent.mkdir(parents=True)
+    same.write_text("same\n", encoding="utf-8")
+    older.write_text("older\n", encoding="utf-8")
+    touch_local(same, "2026-04-01", hour=23)
+    touch_local(older, "2026-03-01")
+    write(
+        tmp_path,
+        "wiki/topics/clock.md",
+        page(
+            "Clock.\n",
+            updated="2026-04-01",
+            sources="\n  - ../../references/raw/same.md\n  - ../../references/raw/older.md",
+        ),
+    )
+    write(tmp_path, "wiki/index.md", page("See [clock](./topics/clock.md).\n", type="map"))
+    result = lint_wiki.lint_root(tmp_path)
+    assert result.errors == []
+    assert not any("consider status: stale" in item.message for item in result.findings)
+
+
+def test_already_stale_status_is_not_rewritten_when_source_is_newer(tmp_path: Path) -> None:
+    raw = tmp_path / "references/papers/note.md"
+    raw.parent.mkdir(parents=True)
+    raw.write_text("paper note\n", encoding="utf-8")
+    touch_local(raw, "2026-08-02")
+    rel = "wiki/topics/old.md"
+    text = page(
+        "Old.\n",
+        status="stale",
+        updated="2026-08-01",
+        review_after="2026-09-01",
+        sources="\n  - ../../references/papers/note.md",
+    )
+    write(tmp_path, rel, text)
+    write(tmp_path, "wiki/index.md", page("See [old](./topics/old.md).\n", type="map"))
+    before = (tmp_path / rel).read_bytes()
+    result = lint_wiki.lint_root(tmp_path)
+    assert (tmp_path / rel).read_bytes() == before
+    assert b"status: stale" in before
+    assert any(
+        item.message
+        == "source '../../references/papers/note.md' is newer than updated "
+        "(2026-08-02 > 2026-08-01); consider status: stale"
+        for item in result.warnings
+    )
