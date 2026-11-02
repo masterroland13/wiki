@@ -80,12 +80,44 @@
 | 跨学科 | `x-` | `x-info-theory-physics.md` |
 | 实体 | `entity-` | `entity-author-orwell.md` |
 
-实体页统一放 `wiki/entities/`；主题页放 `wiki/topics/`。**导航**靠 `index.md` 分区，不靠再建一层学科文件夹。
+实体页统一放 `wiki/entities/`；主题页放 `wiki/topics/`。**导航**靠 `index.md` 分区，不靠再建一层学科文件夹。不为还没有笔记的学科建空 topic。`index.md` 里暂时没有笔记的分区指向 [`inbox.md`](./inbox.md)，不留长期的「待 ingest」空表。
+
+## 实体页（可选字段与建页门槛）
+
+实体页回答「这是谁 / 哪部 / 哪个稳定节点」。理解、比较、应用仍写 `topics/`。下面的字段都可选。旧页不必回填。缺了不会让 `scripts/lint_wiki.py` 失败，也不新增必填项。
+
+| 字段 | 何时写 | 形状 |
+|------|--------|------|
+| `kind` | 想标明实体类型时 | 一个字符串：`book` \| `person` \| `work` \| `org` \| `concept` \| `album` \| `tool`。省略或留空都可以。这是 entity 页的类型，不是 topic 模板里的页面体裁 `kind` |
+| `aliases` | 译名、原题、简称，用来和显式提及对上 | 字符串，或字符串列表。可空 |
+| `people` | 相关人物已经有 entity 页 | 相对本页的路径，或路径列表。没有就空着，不要为了填字段建空人物页 |
+| `works` | 相关作品已经有 entity 页 | 同上 |
+| `date` | 出版、生卒、首演等 | 自由文本。不是机器检查的 `YYYY-MM-DD` |
+| `rating` | 个人评分 | 可空 |
+
+模板：[`templates/entity-template.md`](./templates/entity-template.md)。已有的 [`entities/entity-book-palliative-society.md`](./entities/entity-book-palliative-society.md) 不要求补这些字段。
+
+**建页门槛**
+
+- 至少 **2 个不同的 wiki 页**指向同一个还不存在的 `wiki/entities/entity-*.md`，或用显式 wiki 链接（双括号里的名字）或 `entity:名字` 提及同一个还没有 entity 页的名字。同一页重复只算 1 页。
+- 散文里的人名、书名**不计数**。阅读笔记里反复写到某个人，不会因此变成候选。
+- 用户在当次 `/review` 里**点名**要建：可以建。这是例外，不是把门槛改成 1。脚本没有把门槛调到 1 的开关。
+- 没达门槛，用户也没点名：不要新建。
+- 候选若是「我怎么理解」，写 topic 或不写，不要塞进 `entities/`。
+- 已有 entity 的标题、文件名 slug 或 `aliases` 对上了，就不是候选。对上了别的 wiki 页标题或文件名，也不是 entity 候选。
+
+Weekly `/review` 要跑：
+
+```bash
+python3 scripts/check_missing_entities.py
+```
+
+脚本只打印候选，不建页，不改笔记。有候选时默认退出码仍是 0。`--strict` 时有候选才是 1。`--min-pages` 小于 2 时退出 2。这不是 `lint_wiki.py` 的检查，也不改变 lint 的退出码。
 
 ## 两段式工作流
 
 1. **Capture**：新想法先落 `wiki/inbox.md` 或临时页
-2. **Review**：按周 `/review`，沉淀到 `topics/` / `maps/` / `entities/`
+2. **Review**：按周 `/review`，沉淀到 `topics/` / `maps/` / `entities/`。建 entity 前先看上一节的门槛
 3. **Archive**：值得反复找到的页，从 `index.md` 或 map 链入
 
 详见 [`maps/capture-review-archival-workflow.md`](./maps/capture-review-archival-workflow.md)。
@@ -105,7 +137,7 @@
 |------|------|
 | **/wiki** | 新 URL、截图、聊天、JD → Raw + topic + 导航。**默认 L1**。用户说出「L2 / 深挖 / compile / 级联」才走 L2 compile（相关 entity、相关 map、index + 一条 ingest log）。与已有页冲突时禁止静默覆盖，须写矛盾块或 supersession 字段 |
 | **/query** | 用已有 wiki 页回答：index → map/topic，引用仓库路径；找不到就明说。页与页冲突时并列引用，不选边。结束时在 `log.md` 追加一条 `query`（不是知识回写） |
-| **/review** | inbox、到期页、`growing`/`stale` → 提炼、互链。启动时先读行为记忆层。冲突时禁止静默覆盖，须写矛盾块或 supersession 字段。偏好与纠错写回 `learning-progress/`，不写进 topic 正文 |
+| **/review** | inbox、到期页、`growing`/`stale` → 提炼、互链。启动时先读行为记忆层。Weekly 跑 `scripts/check_missing_entities.py`（≥2 个不同页，或用户点名）再决定要不要建 entity。冲突时禁止静默覆盖，须写矛盾块或 supersession 字段。偏好与纠错写回 `learning-progress/`，不写进 topic 正文 |
 | **/lint** | 先跑 `scripts/lint_wiki.py`，再查导航与模板结构。脚本会警告 `superseded_by` 页仍被 `wiki/index.md` 主推。哪一边为真不在此技能。结束时在 `log.md` 追加一条 `lint`（记下 error / warning 数），不要为此再跑一轮 lint。改过技能后可选再跑 `scripts/check_skill_sync.py`（不改变 lint 的退出码约定） |
 | **/teacher** | 还不会、要推导、系统学习（通用 + CS，见 `domain-cs.md`）。启动时先读行为记忆层。偏好不写进 topic 正文 |
 | **/teacher-cs** | 同上，CS 触发别名（算法、LeetCode、面试） |

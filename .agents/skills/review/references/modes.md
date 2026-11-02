@@ -9,8 +9,9 @@
 
 1. 读 `wiki/inbox.md` — 处理或 defer 每一项（目标：inbox 只留真正未决的）
 2. 扫 **due 页**（见 triage-checklist）— 最多处理 5 页，其余改 `review_after`
-3. **Inspiration pass** — 3 条 Capture 线索
-4. 一句话总结 + 建议下次 review 日期
+3. **缺失 entity** — 跑 `python3 scripts/check_missing_entities.py`，按下方规则写入复盘。不达门槛不建页
+4. **Inspiration pass** — 3 条 Capture 线索
+5. 一句话总结 + 建议下次 review 日期
 
 **输出模板：**
 
@@ -28,6 +29,9 @@
 1. …
 2. …
 3. …
+
+### 缺失 entity
+- …（或：无）
 
 ### 下次
 - 建议 review_after: YYYY-MM-DD
@@ -70,6 +74,34 @@
 - 只处理 inbox 前 3 条
 - 不做 inspiration pass（除非用户要）
 - 输出 ≤ 10 行
+
+---
+
+## 缺失 entity（Weekly 必跑）
+
+```bash
+python3 scripts/check_missing_entities.py
+```
+
+脚本只报告，不建页，不改笔记。默认退出码 0（有候选也是 0）。`--strict` 时有候选才退出 1。`--min-pages` 小于 2 时退出 2，不能把门槛调低。契约在 `wiki/WIKI_SCHEMA.md`「实体页」。
+
+**什么算一个候选**
+
+- 至少 **2 个不同的 wiki 页**链向同一个还不存在的 `wiki/entities/entity-*.md`。
+- 或同一个名字用显式 wiki 链接（双括号）或 `entity:名字` 出现在至少 2 个不同的页上，并且还没有对得上的 entity（标题、文件名 slug 或 `aliases`）。
+- 同一页写两次只算 1 页。
+- 散文里的人名、书名不计数。阅读笔记里反复出现某个人，不会因此建议建页。
+- 名字已经对上别的 wiki 页标题或文件名：不是 entity 候选（那是 topic 或 map）。
+
+**何时可以新建 `wiki/entities/entity-*.md`**
+
+- 脚本列出了候选，并且它确实是稳定节点（人、作品、组织、概念 hub），不是「我怎么理解」。
+- **或者**用户在当次 review 里点名要建这个 entity。点名是例外，不是把门槛改成 1。
+- 两条都不满足：不要新建。
+
+不要为空的学科建空 topic。索引里没有笔记的分区指向 `wiki/inbox.md`。
+
+输出里照抄脚本的候选行和页路径。0 条就写「缺失 entity：无」。
 
 ---
 

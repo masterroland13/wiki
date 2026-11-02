@@ -37,7 +37,7 @@ description: Answer from this wiki by reading wiki/index.md, then maps and topic
 然后：
 
 - 不编造来源路径，不把没读过的文件说成已读
-- 列出已经读过的路径，并说明缺的是哪一类页（例如「理工分区仍是待 ingest」）
+- 列出已经读过的路径，并说明缺的是哪一类页（例如「索引的理工区还没有笔记，材料在 wiki/inbox.md」）
 - 不调用 embedding、向量库、QMD、GraphRAG，或任何外部检索服务
 - 不把 `references/raw/` 或 `references/papers/` 当成默认真相源去补答。只有某张 wiki 页已经指向一份 raw，且问题明确要核对那份原文时，才打开那一份
 - 可以指出 `wiki/inbox.md`，或建议下一轮用 `/wiki` 归档。不要在这次回答里大改 wiki

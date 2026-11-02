@@ -1,6 +1,6 @@
 ---
 name: review
-description: Review, consolidate, and reconnect this wiki's knowledge—and spark new ideas from what you already captured. Use when the user says /review, 回顾 wiki, 复习整理, weekly review, 复盘, 整理 inbox, review_after 到期, or wants inspiration from existing notes. Complements /wiki (capture/archive), /query (answer from existing pages), /teacher (learn new material), /lint (mechanical link/nav fix)—not a substitute for any of them.
+description: Review, consolidate, and reconnect this wiki's knowledge—and spark new ideas from what you already captured. Use when the user says /review, 回顾 wiki, 复习整理, weekly review, 复盘, 整理 inbox, review_after 到期, or wants inspiration from existing notes. Weekly review runs scripts/check_missing_entities.py and does not create an entity below the two-page threshold unless the user names it. Complements /wiki (capture/archive), /query (answer from existing pages), /teacher (learn new material), /lint (mechanical link/nav fix)—not a substitute for any of them.
 ---
 
 # review
@@ -67,6 +67,7 @@ Review 时对每个候选页问：
 - `review_after` ≤ 今天（或用户指定窗口）
 - `status: growing` / `stale`
 - 用户点名的 map / project / tag
+- Weekly 另跑 `python3 scripts/check_missing_entities.py`（见 `references/modes.md`「缺失 entity」）。门槛是 ≥2 个不同的 wiki 页。用户当次点名也可以建 entity。未达门槛且没有点名，不要新建。不要为空学科建空 topic
 
 ### 3. 逐项处理
 

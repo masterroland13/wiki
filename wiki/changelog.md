@@ -4,6 +4,10 @@ Newest entries at the top.
 
 ## 2026-11-02
 
+- **Slice H**：entity 模板补上可选类型字段（`kind`：`book` | `person` | `work` | `org` | `concept` | `album` | `tool`；`aliases`；`people` / `works` 为相对路径列表）。旧页不必回填，lint 不把这些字段当必填。契约在 [`WIKI_SCHEMA.md`](WIKI_SCHEMA.md)「实体页」。
+- Weekly `/review` 跑 `scripts/check_missing_entities.py`。候选要来自至少 2 个不同的 wiki 页（缺页的 `entity-*.md` 链接，或显式双括号 / `entity:` 提及）。散文里的人名不算。用户当次点名可以建。脚本不建页，也不能把门槛调到 1 以下。不为空学科建空 topic。
+- [`index.md`](index.md) 文艺、理工、跨学科不再留「待 ingest」空表，改为指向 [`inbox.md`](inbox.md)。未改《妥协社会》阅读笔记正文。未改 L1 默认。未做 Slice G、J。
+
 - 上手手册的阅读入口改为 [`maps/wiki-teaching-usage-handbook.md`](maps/wiki-teaching-usage-handbook.md)（标题「wiki教学与使用手册」）。[`maps/wiki-user-guide.md`](maps/wiki-user-guide.md) 留短跳转并标 `superseded_by`，不再从 [`index.md`](index.md) 主推。
 
 - **Slice I**：技能正文的单一真相源是 `.agents/skills/`。新增 `scripts/check_skill_sync.py`，按文件 SHA-256 对照 `.cursor/skills/`、`.claude/skills/`、`.codex/skills/`。只改 canonical 再同步镜像；宿主副本不是第二份原文。漂移退出码 1 并打印路径；一致为 0。`/lint` 把它列为可选附加检查，不改变 `lint_wiki.py` 的契约。未做 Slice G、H、J。未改 L1 默认、`log.md` 协议、source-clock 与行为记忆路由。

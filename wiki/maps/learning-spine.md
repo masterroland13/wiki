@@ -2,7 +2,7 @@
 type: map
 status: seed
 created: 2026-06-30
-updated: 2026-06-30
+updated: 2026-11-02
 tags:
   - learning
   - map
@@ -37,8 +37,8 @@ sources:
 
 ## 当前缺口
 
-- 各域尚无 seed topic（ingest 后在此补链接）
-- 可选：为单一域建 `wiki/roadmaps/<domain>/` 子路线
+- 文学、电影、音乐、计算机、物理、天文还没有 topic。先记在 [Inbox](../inbox.md)，有笔记后再把链接补到本表。不要为这些空域建空页。
+- 哲学已有《妥协社会》簇，入口在 [index](../index.md) 的人文区。
 
 ## Related
 

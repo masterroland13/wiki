@@ -5,11 +5,11 @@
 ## Icebox
 
 - Slice G（门槛后才做）：wiki 实质页 ≥50，或纯 index 命中率低于约定阈值时，再评估 Hybrid 检索（QMD、本地 `qmd` 或 sage-wiki）。未达门槛不上。
-- Slice H（未做）：entity 模板字段与 index 空壳清理；有提及门槛，不为空学科建空 topic。
 - Slice J（未做，最低优先）：轻量只读浏览。Obsidian 不作写入真相源。
 
 ## 已完成
 
+- 2026-11-02：Slice H entity 模板可选类型字段（`kind` / `aliases` / `people` / `works`）与缺失 entity 扫描（[`scripts/check_missing_entities.py`](scripts/check_missing_entities.py)，≥2 个不同 wiki 页，或用户点名；散文不计）。`wiki/index.md` 的空区改指向 inbox。不为空学科建空 topic。未做 Slice G、J。
 - 2026-11-02：Slice I 技能同步校验（[`scripts/check_skill_sync.py`](scripts/check_skill_sync.py)）。Canonical 是 `.agents/skills/`；`.cursor/skills/`、`.claude/skills/`、`.codex/skills/` 只做镜像。漂移退出码 1 并打印路径。
 - 2026-11-02：Slice F 行为记忆层（`wiki/projects/learning-progress/`：偏好 / 纠错 / 教学进度；写入路由在 schema 与该目录 README；`/teacher` 与 `/review` 启动先读）。事实与偏好的合成示例分开。不要求 Mem0。
 - 2026-11-02：Slice E source-clock stale（`wiki/` 外 source 的 mtime 日期晚于 `updated` 时 warning，建议 `status: stale`，不写回）。
