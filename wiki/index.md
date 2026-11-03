@@ -2,7 +2,7 @@
 type: map
 status: growing
 created: 2026-06-30
-updated: 2026-11-02
+updated: 2026-11-03
 tags:
   - wiki
   - index
@@ -47,7 +47,11 @@ review_after: 2026-07-15
 
 ## 理工
 
-这一区还没有笔记。新材料先记在 [Inbox](./inbox.md)。有内容后再用 `cs-` / `phys-` / `astro-` 写入 `topics/`。不要为还没有内容的学科建空 topic。
+| 笔记 | 说明 |
+|------|------|
+| [Loop Agent 源码学习十章](./projects/loop-agent-source-book/README.md) | 对照 Pi Agent Book 的章节，按 loop-agent 仓库当时的调用链讲解 |
+
+物理、天文还没有笔记。新材料先记在 [Inbox](./inbox.md)。有内容后再用 `phys-` / `astro-` 写入 `topics/`。不要为还没有内容的学科建空 topic。
 
 ## 跨学科
 
