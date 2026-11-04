@@ -7,6 +7,7 @@
 | [llm-wiki-frontier-2026-11.md](research/llm-wiki-frontier-2026-11.md) | 2026-11-02 前沿调研：抄什么、不抄什么、缺口 |
 | [wiki-frontier-upgrade.md](plans/wiki-frontier-upgrade.md) | 升级施工计划（Slice A–J） |
 | [wiki-slice-audit.md](handbooks/wiki-slice-audit.md) | 每一刀结束后的切片审查手册 |
+| [OVERNIGHT-AUDIT.md](../OVERNIGHT-AUDIT.md) | 2026-11-04 结构审计：索引、断链、Loop Agent 交叉链。只读结论，未改知识页 |
 
 ## 当前范围
 
